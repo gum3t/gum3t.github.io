@@ -235,11 +235,86 @@ error:
 	return -EBADF;
 ```
 
-If we can force `get_unused_fd_flags(0)` to fail, the _file_ struct `f_count` will be decremented. This is a problem because at this moment, the `f_count` still has not been modified as it is incremented in `get_file(file)` function. This would allow us to decrement a file's `f_count` at our will, which by the time it reaches `0`, the _file_ struct will be released/freed giving us a UAF primitive.
+If we can force `get_unused_fd_flags(0)` to fail, the _file_ struct `f_count` will be decremented. This is a problem because at this moment, the `f_count` still has not been modified as it is incremented in `get_file(file)` function. This would allow us to decrement a file's `f_count` at our will, which by the time it reaches `0`, the _file_ struct will be released/freed. This means that we could have the ability to free any _file_ struct we control with a file descriptor.
 
 But how can we force `get_unused_fd_flags(0)` to fail? There's a command called `prlimit` that modifies the resource limits of a given process. In `C`, we can use `prlimit` or `setprlimit` to modify the max number of open files (`RLIMIT_NOFILE`) a process can have. If we reach this limit, `get_unused_fd_flags(0)` will always return an error.
 
-Now that we have identified the UAF primitive, we can desing a proper strategy to exploit it. To do so, we will go through the following steps:
+Ok, so by this moment, we have found a way to free _file_ structs. Now we need to leverage this to a UAF.
+To achieve this goal, we can check on how `mmap()` works.
+
+When `mmap()` asks for memory, the requested pages are not instantly mapped into memory. Instead, by the time you access the mapped region, it produces a `page fault` that, when handled, loads the requested pages.
+
+As a useful example, let's check what happens in the kernel. We can map a temporary file into memory. Here, a _file_ struct is assigned to the mapped region. Later, `call_mmap()` is called, which is a wrapper for `file->f_op->mmap()`.
+
+```c
+// mmap.c
+// https://elixir.bootlin.com/linux/v6.6.34/source/mm/mmap.c#L2781
+unsigned long mmap_region(struct file *file, unsigned long addr,
+		unsigned long len, vm_flags_t vm_flags, unsigned long pgoff,
+		struct list_head *uf)
+{
+	...
+		vma->vm_file = get_file(file);
+		error = call_mmap(file, vma);
+	...
+
+// fs.h
+// https://elixir.bootlin.com/linux/v6.6.34/source/include/linux/fs.h#L2020
+static inline int call_mmap(struct file *file, struct vm_area_struct *vma)
+{
+	return file->f_op->mmap(file, vma);
+}
+```
+
+The previously mentioned `file->f_op->mmap()` points to the specific `mmap()` implementation for the file system that the file resides on. In our case, it is pointing to `ext4_file_mmap()`.
+Here, we can check how the `ext4` related operations are assigned:  
+
+```c
+// https://elixir.bootlin.com/linux/v6.6.34/source/fs/ext4/file.c#L776
+static const struct vm_operations_struct ext4_file_vm_ops = {
+	.fault		= filemap_fault,
+	.map_pages	= filemap_map_pages,
+	.page_mkwrite   = ext4_page_mkwrite,
+}
+
+...
+
+// https://elixir.bootlin.com/linux/v6.6.34/source/fs/ext4/file.c#L802
+static int ext4_file_mmap(struct file *file, struct vm_area_struct *vma)
+{
+	...
+	vma->vm_ops = &ext4_file_vm_ops;
+	...
+
+```
+
+At this point, the `mmap()` of the temporary file has finished. However, the mapped region still has not been accessed, so the pages of the file are not mapped into memory yet.
+The first time we try to access the mapped region, a `page fault` will be triggered so `vma->vm_ops->fault()` will be called:
+
+```c
+// https://elixir.bootlin.com/linux/v6.6.34/source/mm/memory.c#L4227
+static vm_fault_t __do_fault(struct vm_fault *vmf)
+{
+	...
+	ret = vma->vm_ops->fault(vmf);
+```
+
+As it has been explained before, `vma->vm_ops->fault()` now points to `filemap_fault()` and here we can see how the actual file is finally accessed, so the file pages can finally be mapped into memory: 
+```c
+// https://elixir.bootlin.com/linux/v6.6.34/source/mm/filemap.c#L3264
+vm_fault_t filemap_fault(struct vm_fault *vmf)
+{	
+	int error;
+	struct file *file = vmf->vma->vm_file;
+	struct file *fpin = NULL;
+	struct address_space *mapping = file->f_mapping;
+	struct inode *inode = mapping->host;
+	...
+```
+
+If we manage to free a _file_ struct after it has been assigned a mapped region, but before this region has been accessed, and then we are capable of filling the freed space with another _file_ struct pointing to another file, we will be able to map the pages of the second file with the permissions of the mapped region, giving us our wanted UAF :) 
+
+Now that we have identified the UAF primitive, we can design a proper strategy to exploit it. To do so, we will go through the following steps:
 
 1. **Create a temporary file**: create a file with `O_RDWR` permissions.
 2. **Map the temporary file**: map the file into memory with `PROT_READ` and `PROT_WRITE` protections and the `MAP_SHARED` flag. This way we will be able to write into the desired file after leveraging the UAF primitive.
