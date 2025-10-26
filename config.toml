@@ -52,7 +52,7 @@ mermaid = false
 # Enable comment support globally.
 comment = false
 # The URL of social image.
-social_image = "icons/github.svg"
+social_image = "images/movaps_logo_barretina.png"
 
 [extra.style]
 # The custom background color.
@@ -84,6 +84,10 @@ avatar_invert = false
 [[extra.profile.social]]
 name = "github"
 url = "https://github.com/gum3t"
+
+[[extra.profile.social]]
+name = "mastodon"
+url = "https://infosec.exchange/@gum3t"
 
 [[extra.profile.social]]
 name = "twitter"
